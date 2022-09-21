@@ -1,3 +1,6 @@
+Changes in version 1.4.2 (2022-09-21)
++ URL class now encodes brackets in parameter values.
+
 Changes in version 1.4.1 (2022-09-20)
 + Update URL to connect to new UniProtKB REST API.
 
