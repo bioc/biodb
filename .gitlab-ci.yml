@@ -1,0 +1,15 @@
+test:r42:
+  stage: test
+  image: r-base:4.2.2
+  script:
+    - apt-get update
+    - >-
+      apt-get install -y libcurl4-openssl-dev libxml2-dev libfontconfig1-dev
+      libharfbuzz-dev libfribidi-dev
+      libssl-dev
+      libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev
+      pandoc texlive-full
+    - R -e "install.packages('devtools')"
+    - make install.deps
+    - make tests
+    - make check
