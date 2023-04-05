@@ -111,9 +111,6 @@ private=list(
 
     if ( ! is.null(private$db)) {
 
-        logInfo('Write all new entries into "%s".',
-            self$getPropValSlot('urls', 'base.url'))
-
         # Get new entries
         cached.entries <- self$getAllVolatileCacheEntries()
         is.new <- vapply(cached.entries, function(x) x$isNew(), FUN.VALUE=TRUE)
