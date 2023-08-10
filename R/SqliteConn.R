@@ -238,9 +238,35 @@ doGetEntryIds=function(max.results=0) {
     }
 
     return(ids)
-},
+}
 
-doGetEntryContentFromDb=function(id) {
+,hasEntry=function(id) {
+
+    has_entry <- FALSE
+
+    private$initDb()
+
+    if ( ! is.null(private$db)) {
+
+        # List tables
+        tables <- DBI::dbListTables(private$db)
+
+        if ('entries' %in% tables) {
+
+            # Build query
+            query <- paste0("select accession from entries where accession = '",
+                id, "'")
+
+            # Run query
+            df <- DBI::dbGetQuery(private$db, query)
+            has_entry <- (nrow(df) > 0)
+        }
+    }
+        
+    return(has_entry)
+}
+
+,doGetEntryContentFromDb=function(id) {
 
     # Initialize contents to return
     content <- rep(list(NULL), length(id))

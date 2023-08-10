@@ -26,8 +26,7 @@ Suggests:
     knitr,
     rmarkdown,
     covr,
-    xml2,
-    git2r
+    xml2
 Imports:
     BiocFileCache,
     R6,
@@ -36,6 +35,7 @@ Imports:
     Rcpp,
     XML,
     chk,
+    git2r,
     jsonlite,
     lgr,
     lifecycle,
