@@ -7,6 +7,15 @@ test_new_field <- function(biodb) {
     testthat::expect_true(ef$isDefined('n_stars'))
 }
 
+test_load_definitions <- function(biodb) {
+    defFile <- system.file("extdata", "hmdb.yml", package="biodb")
+    defFile2 <- system.file("extdata", "hmdb_sec_acc_def.yml", package="biodb")
+    biodb$loadDefinitions(defFile)
+    biodb$loadDefinitions(defFile2)
+    ef <- biodb$getEntryFields()
+    testthat::expect_true(ef$isDefined('secondary_accessions'))
+}
+
 test_new_parsing_expr <- function(biodb) {
 
     # Load ChEBI connector definition
@@ -262,6 +271,8 @@ biodb::testContext("Test definition of extensions.")
 # Run tests
 biodb::testThat("We can get the remote repository name.", test_getReposName)
 biodb::testThat("We can define a new field.", test_new_field, biodb=biodb)
+biodb::testThat("We can load definitions from a file.", test_load_definitions,
+                biodb=biodb)
 biodb::testThat("We can define a new parsing expression.",
                 test_new_parsing_expr, biodb=biodb)
 biodb::testThat("print() method works correctly.", test_chebiExShow,

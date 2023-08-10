@@ -1,0 +1,5 @@
+databases:
+
+  hmdb.metabolites:
+    name: HMDB
+    entry.content.type: txt

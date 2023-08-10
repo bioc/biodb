@@ -1,0 +1,12 @@
+databases:
+
+  hmdb.metabolites:
+    parsing.expr:
+      secondary_accessions: /metabolite/secondary_accessions/accession
+
+fields:
+  secondary_accessions:
+    description: Deprecated identifiers
+    case.insensitive: true
+    forbids.duplicates: true
+    card: many
