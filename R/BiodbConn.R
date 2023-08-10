@@ -459,30 +459,30 @@ addNewEntry=function(entry) {
             ' entry has an accession number set to NA.')
 
     # Accession number is already used?
-    e <- self$getEntry(id)
-    if ( ! is.null(e))
-        error0('Impossible to add entry as a new entry. The accession',
-            ' number of the passed entry is already used in the',
+    if (private$hasEntry(id))
+        warn0('Impossible to add entry as a new entry. The accession',
+            ' number ', id, ' of the passed entry is already used in the',
             ' connector.')
+    else {
+        # Make sure ID field is equal to accession
+        id.field <- self$getEntryIdField()
+        if ( ! entry$hasField(id.field) || entry$getFieldValue(id.field) != id)
+            entry$setFieldValue(id.field, id)
 
-    # Make sure ID field is equal to accession
-    id.field <- self$getEntryIdField()
-    if ( ! entry$hasField(id.field) || entry$getFieldValue(id.field) != id)
-        entry$setFieldValue(id.field, id)
+        # Remove entry from non-volatile cache
+        cch <- private$bdb$getPersistentCache()
+        if (cch$isWritable(self))
+            cch$deleteFile(self$getCacheId(), name=id, ext=self$getEntryFileExt())
 
-    # Remove entry from non-volatile cache
-    cch <- private$bdb$getPersistentCache()
-    if (cch$isWritable(self))
-        cch$deleteFile(self$getCacheId(), name=id, ext=self$getEntryFileExt())
+        # Flag entry as new
+        entry$.__enclos_env__$private$setAsNew(TRUE)
 
-    # Flag entry as new
-    entry$.__enclos_env__$private$setAsNew(TRUE)
+        # Set the connector as its parent
+        entry$.__enclos_env__$private$setParent(self)
 
-    # Set the connector as its parent
-    entry$.__enclos_env__$private$setParent(self)
-
-    # Add entry to volatile cache
-    private$addEntriesToCache(id, list(entry))
+        # Add entry to volatile cache
+        private$addEntriesToCache(id, list(entry))
+    }
 
     return(invisible(NULL))
 },
@@ -2372,6 +2372,10 @@ computeChromColRtRange=function(entry) {
     }
 
     return(results)
+}
+
+,hasEntry=function(id) {
+    return( ! is.null(self$getEntry(id)))
 }
 
 ,terminate=function() {
