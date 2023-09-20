@@ -1,3 +1,7 @@
+Changes in version 1.8.1 (2023-09-20)
++ Improve insertion of new entries into an SQLite database.
++ Resolve a bug when definning a new field.
+
 Changes in version 1.3.3 (2022-04-02)
 + Explain how to use custom CSV file in vignette.
 
