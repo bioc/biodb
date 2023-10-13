@@ -288,8 +288,8 @@ In our implementations of `doGetEntryPageUrl()`, `doGetEntryImageUrl()` and
 `getPropValSlot()` method to get some base URLs (`"base.url"`, `"ws.url"`).
 These values are defined inside the connector YAML definition file that we will
 detail below.
-Also, in those methods, we use the `BiobdUrl` class to build the URLs.
-`BiodbUrl` handles the building of the URL parameters, as well as the encoding
+Also, in those methods, we use the `sched::URL` class to build the URLs.
+`sched::URL` handles the building of the URL parameters, as well as the encoding
 of special characters.
 
 ### Method for searching for entries

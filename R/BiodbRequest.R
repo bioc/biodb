@@ -3,7 +3,7 @@
 #' This class represents a Request object that can be used with the Request
 #' Scheduler.
 #'
-#' @seealso \code{\link{BiodbRequestScheduler}}, \code{\link{BiodbUrl}}.
+#' @seealso \code{\link{BiodbRequestScheduler}}, \code{\link{sched::URL}}.
 #'
 #' @examples
 #' # Create an instance with default settings:
@@ -11,7 +11,7 @@
 #'
 #' # Create a request object
 #' u <- 'https://www.ebi.ac.uk/webservices/chebi/2.0/test/getCompleteEntity'
-#' url <- BiodbUrl$new(url=u)
+#' url <- sched::URL$new(url=u)
 #' url$setParam('chebiId', 15440)
 #' request <- BiodbRequest$new(method='get', url=url)
 #'
@@ -23,7 +23,7 @@
 #'
 #' @import R6
 #' @import openssl
-#' @include BiodbUrl.R
+#' @include sched::URL.R
 #' @export
 BiodbRequest <- R6::R6Class("BiodbRequest",
 
@@ -31,7 +31,7 @@ public=list(
 
 #' @description
 #' Initializer.
-#' @param url A \code{BiodbUrl} object.
+#' @param url A \code{sched::URL} object.
 #' @param method HTTP method. Either "get" or "post".
 #' @param header The header.
 #' @param body The body.
@@ -77,7 +77,7 @@ getConn=function() {
 
 #' @description
 #' Gets the URL.
-#' @return The URL as a BiodbUrl object.
+#' @return The URL as a sched::URL object.
 getUrl=function() {
 
     return(private$url)

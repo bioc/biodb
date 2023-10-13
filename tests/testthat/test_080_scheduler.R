@@ -176,7 +176,7 @@ test_directRequestToChebi <- function(biodb) {
 
     # Create URL object
     u <- 'https://www.ebi.ac.uk/webservices/chebi/2.0/test/getCompleteEntity'
-    url <- BiodbUrl$new(url=u, params=list(chebiId=15440))
+    url <- sched::URL$new(url=u, params=list(chebiId=15440))
 
     # Check rule does not exist
     testthat::expect_null(sched$findRule(url, create=FALSE))
@@ -204,7 +204,7 @@ test_directRequestToUniprot <- function(biodb) {
     # Create URL object
     u <- 'https://rest.uniprot.org/uniprotkb/search'
     p <- list(query='e', fields='id', format='tsv', size=2)
-    url <- BiodbUrl$new(url=u, params=p, chompExtraSlashes=FALSE)
+    url <- sched::URL$new(url=u, params=p, chompExtraSlashes=FALSE)
 
     # Check rule does not exist
     testthat::expect_null(sched$findRule(url, create=FALSE))
@@ -228,7 +228,7 @@ test_wrongURL <- function(biodb) {
 
     # Create URL object
     u <- 'http://rest.kegg.jp/get/mmu00627'
-    url <- BiodbUrl$new(url=u)
+    url <- sched::URL$new(url=u)
 
     # Create a request object
     request <- BiodbRequest$new(method='get', url=url)

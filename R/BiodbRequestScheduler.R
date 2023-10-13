@@ -18,7 +18,7 @@
 #'
 #' # Create a request object
 #' u <- 'https://www.ebi.ac.uk/webservices/chebi/2.0/test/getCompleteEntity'
-#' url <- BiodbUrl$new(url=u)
+#' url <- sched::URL$new(url=u)
 #' url$setParam('chebiId', 15440)
 #' request <- BiodbRequest$new(method='get', url=url)
 #'
@@ -137,7 +137,7 @@ sendRequest=function(request, cache.read=TRUE) {
 #' @description
 #' Downloads the content of a URL and save it into the specified
 #'     destination file.
-#' @param url The URL to access, as a BiodbUrl object.
+#' @param url The URL to access, as a sched::URL object.
 #' @param dest.file A path to a destination file.
 #' @return Nothing.
 downloadFile=function(url, dest.file) {
@@ -207,9 +207,9 @@ notifyConnSchedulerFrequencyUpdated=function(conn) {
 #' @param params A list of URL parameters.
 #' @return A BiodUrl object.
 getUrlString=function(url, params=list()) {
-    lifecycle::deprecate_soft('1.0.0', 'getUrlString()', "BiodbUrl::toString()")
+    lifecycle::deprecate_soft('1.0.0', 'getUrlString()', "sched::URL::toString()")
 
-    url <- BiodbUrl$new(url=url, params=params)$toString(encode=FALSE)
+    url <- sched::URL$new(url=url, params=params)$toString(encode=FALSE)
 
     return(url)
 },
@@ -231,7 +231,7 @@ getUrl=function(url, params=list(), method=c('get', 'post'), header=character(),
 
     method <- match.arg(method)
 
-    request <- BiodbRequest$new(url=BiodbUrl$new(url=url, params=params),
+    request <- BiodbRequest$new(url=sched::URL$new(url=url, params=params),
         method=method, header=header, body=body, encoding=encoding)
 
     return(self$sendRequest(request))
@@ -245,9 +245,9 @@ getUrl=function(url, params=list(), method=c('get', 'post'), header=character(),
 findRule=function(url, create=TRUE) {
 
     chk::chk_not_null(url)
-    if ( ! is(url, 'BiodbUrl')) {
+    if ( ! is(url, 'URL')) {
         chk::chk_string(url)
-        url <- BiodbUrl$new(url=url)
+        url <- sched::URL$new(url=url)
     }
     domain <- url$getDomain()
 

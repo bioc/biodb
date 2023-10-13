@@ -1184,7 +1184,7 @@ getEntryImageUrl=function(entry.id) {
 #' @description
 #' Gets the URL to the page of the entry on the database web site.
 #' @param entry.id A character vector with the IDs of entries to retrieve.
-#' @return A list of BiodbUrl objects, the same length as `entry.id`.
+#' @return A list of sched::URL objects, the same length as `entry.id`.
 getEntryPageUrl=function(entry.id) {
 
     private$checkIsRemote()
@@ -1982,7 +1982,7 @@ doGetEntryContentOneByOne=function(entry.id) {
     # scheme.
     # We now convert the requests to the new scheme, using class BiodbRequest.
     if (is.character(requests)) {
-        fct <- function(x) self$makeRequest(method='get', url=BiodbUrl$new(x),
+        fct <- function(x) self$makeRequest(method='get', url=sched::URL$new(x),
             encoding=encoding)
         requests <- lapply(requests, fct)
     }

@@ -39,7 +39,7 @@ initialize=function(...) {
 
     # Build request
     params <- list(name=name)
-    url <- BiodbUrl$new(url=c(self$getPropValSlot('urls', 'ws.url'), 'find'),
+    url <- sched::URL$new(url=c(self$getPropValSlot('urls', 'ws.url'), 'find'),
                     params=params)
     request <- self$makeRequest(method='get', url=url)
 
@@ -150,7 +150,7 @@ doGetNbEntries=function(count=FALSE) {
     # entries to retrieve.
     u <- c(self$getPropValSlot('urls', 'base.url'), 'entries',
            paste(id, 'xml', sep='.'))
-    url <- BiodbUrl$new(url=u)$toString()
+    url <- sched::URL$new(url=u)$toString()
 
     return(url)
 }
@@ -160,7 +160,7 @@ doGetNbEntries=function(count=FALSE) {
     # TODO Modify this code to build the individual URLs to the entry web pages
     fct <- function(x) {
         u <- c(self$getPropValSlot('urls', 'base.url'), 'entries', x)
-        BiodbUrl$new(url=u)$toString()
+        sched::URL$new(url=u)$toString()
     }
 
     return(vapply(id, fct, FUN.VALUE=''))
@@ -172,7 +172,7 @@ doGetNbEntries=function(count=FALSE) {
     fct <- function(x) {
         u <- c(self$getPropValSlot('urls', 'base.url'), 'images', x,
                'image.png')
-        BiodbUrl$new(url=u)$toString()
+        sched::URL$new(url=u)$toString()
     }
 
     return(vapply(id, fct, FUN.VALUE=''))
@@ -189,7 +189,7 @@ doGetNbEntries=function(count=FALSE) {
            'to', 'the', 'file.zip')
     
     # Transform it intoa biodb URL object
-    fileUrl <- BiodbUrl$new(url=fileUrl)
+    fileUrl <- sched::URL$new(url=fileUrl)
 
     # Download the file using the biodb scheduler
     biodb::logInfo0("Downloading \"", fileUrl$toString(), "\"...")
