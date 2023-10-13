@@ -18,7 +18,7 @@ mybiodb <- biodb::newInst()
 
 # Create a request object
 u <- 'https://www.ebi.ac.uk/webservices/chebi/2.0/test/getCompleteEntity'
-url <- BiodbUrl$new(url=u)
+url <- sched::URL$new(url=u)
 url$setParam('chebiId', 15440)
 request <- BiodbRequest$new(method='get', url=url)
 
@@ -28,9 +28,6 @@ mybiodb$getRequestScheduler()$sendRequest(request)
 # Terminate instance.
 mybiodb$terminate()
 
-}
-\seealso{
-\code{\link{BiodbRequestScheduler}}, \code{\link{BiodbUrl}}.
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -69,7 +66,7 @@ Initializer.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{url}}{A \code{BiodbUrl} object.}
+\item{\code{url}}{A \code{sched::URL} object.}
 
 \item{\code{method}}{HTTP method. Either "get" or "post".}
 
@@ -132,7 +129,7 @@ Gets the URL.
 }
 
 \subsection{Returns}{
-The URL as a BiodbUrl object.
+The URL as a sched::URL object.
 }
 }
 \if{html}{\out{<hr>}}

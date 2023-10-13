@@ -22,3 +22,4 @@
 ^.BBSoptions$
 ^.*rds$
 biodb.BiocCheck
+^.gitlab-ci.yml$

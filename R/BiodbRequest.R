@@ -3,8 +3,6 @@
 #' This class represents a Request object that can be used with the Request
 #' Scheduler.
 #'
-#' @seealso \code{\link{BiodbRequestScheduler}}, \code{\link{sched::URL}}.
-#'
 #' @examples
 #' # Create an instance with default settings:
 #' mybiodb <- biodb::newInst()
@@ -23,7 +21,7 @@
 #'
 #' @import R6
 #' @import openssl
-#' @include sched::URL.R
+#' @import sched
 #' @export
 BiodbRequest <- R6::R6Class("BiodbRequest",
 

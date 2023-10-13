@@ -25,7 +25,7 @@ sched <- mybiodb$getRequestScheduler()
 
 # Create a request object
 u <- 'https://www.ebi.ac.uk/webservices/chebi/2.0/test/getCompleteEntity'
-url <- BiodbUrl$new(url=u)
+url <- sched::URL$new(url=u)
 url$setParam('chebiId', 15440)
 request <- BiodbRequest$new(method='get', url=url)
 
@@ -36,9 +36,6 @@ sched$sendRequest(request)
 mybiodb$terminate()
 mybiodb <- NULL
 
-}
-\seealso{
-\code{\link{BiodbRequestSchedulerRule}}.
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -152,7 +149,7 @@ destination file.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{url}}{The URL to access, as a BiodbUrl object.}
+\item{\code{url}}{The URL to access, as a sched::URL object.}
 
 \item{\code{dest.file}}{A path to a destination file.}
 }

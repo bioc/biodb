@@ -1178,7 +1178,7 @@ Gets the URL to the page of the entry on the database web site.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A list of BiodbUrl objects, the same length as \code{entry.id}.
+A list of sched::URL objects, the same length as \code{entry.id}.
 }
 }
 \if{html}{\out{<hr>}}
