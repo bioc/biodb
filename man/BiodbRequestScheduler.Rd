@@ -27,7 +27,7 @@ sched <- mybiodb$getRequestScheduler()
 u <- 'https://www.ebi.ac.uk/webservices/chebi/2.0/test/getCompleteEntity'
 url <- sched::URL$new(url=u)
 url$setParam('chebiId', 15440)
-request <- BiodbRequest$new(method='get', url=url)
+request <- sched::Request$new(method='get', url=url)
 
 # Send request
 sched$sendRequest(request)
@@ -122,7 +122,7 @@ Sends a request, and returns content result.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{request}}{A BiodbRequest instance.}
+\item{\code{request}}{A sched::Request instance.}
 
 \item{\code{cache.read}}{If set to TRUE, the cache system will be used. In case the
 same request has already been run and its results saved into the cache, then

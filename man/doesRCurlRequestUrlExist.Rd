@@ -7,7 +7,7 @@
 doesRCurlRequestUrlExist(request, useragent = NULL)
 }
 \arguments{
-\item{request}{A BiodbRequest object, from which the URL will be gotten.}
+\item{request}{A sched::Request object, from which the URL will be gotten.}
 
 \item{useragent}{The user agent identification.}
 }

@@ -74,7 +74,6 @@ Collate:
     'BiodbHtmlEntry.R'
     'BiodbJsonEntry.R'
     'BiodbListEntry.R'
-    'BiodbRequest.R'
     'BiodbRequestScheduler.R'
     'BiodbRequestSchedulerRule.R'
     'BiodbTxtEntry.R'

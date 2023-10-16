@@ -7,7 +7,7 @@ getUrlContent <- function(u, binary=FALSE) {
     chk::chk_string(u)
     chk::chk_flag(binary)
 
-    opts <- makeRCurlOptions()
+    opts <- RCurl::curlOptions(useragent=NULL, timeout.ms=60000, verbose=FALSE)
     if (RCurl::url.exists(u, .opts=opts)) {
         logDebug("Use RCurl for downloading content of URL %s.", u)
         content <- getRCurlContent(u, opts=opts, binary=binary)
@@ -21,12 +21,12 @@ getUrlContent <- function(u, binary=FALSE) {
 
 #' Send a request and get results.
 #'
-#' @param request A BiodbRequest object.
+#' @param request A sched::Request object.
 #' @param useragent The user agent identification.
 #' @param ssl.verifypeer Set to TRUE to enable SSL verify peer.
 #' @return A RequestResult object.
 getUrlRequestResult <- function(request, useragent=NULL, ssl.verifypeer=TRUE) {
-    chk::chk_is(request, 'BiodbRequest')
+    chk::chk_is(request, 'Request')
     chk::chk_null_or(useragent, vld=chk::vld_string)
     chk::chk_flag(ssl.verifypeer)
 
@@ -62,43 +62,14 @@ getUrlRequestResult <- function(request, useragent=NULL, ssl.verifypeer=TRUE) {
     return(res)
 }
 
-#' Build an RCurl::CURLOptions object.
-#'
-#' @param useragent The user agent identification.
-#' @param httpheader The HTTP header to send.
-#' @param postfields POST fields, in case of a POST method.
-#' @param timeout.ms The timeout in milliseconds.
-#' @param verbose Set to TRUE to get verbose output in RCurl.
-#' @return An RCurl::CURLOptions object.
-makeRCurlOptions <- function(useragent=NULL, httpheader=NULL, postfields=NULL,
-    timeout.ms=60000, verbose=FALSE) {
-    chk::chk_null_or(useragent, vld=chk::vld_string)
-    chk::chk_null_or(httpheader, vld=chk::vld_character)
-    chk::chk_null_or(postfields, vld=chk::vld_character)
-    chk::chk_whole_number(timeout.ms)
-    chk::chk_flag(verbose)
-
-    opts <- list()
-
-    if ( ! is.null(httpheader) && length(httpheader) > 0)
-        opts$httpheader <- httpheader
-
-    if ( ! is.null(postfields) && length(postfields) > 0)
-        opts$postfields <- postfields
-
-    opts <- RCurl::curlOptions(useragent=useragent, timeout.ms=timeout.ms,
-        verbose=verbose, .opts=opts)
-
-    return(opts)
-}
 
 #' Test if a URL is valid according to RCurl
 #'
-#' @param request A BiodbRequest object, from which the URL will be gotten.
+#' @param request A sched::Request object, from which the URL will be gotten.
 #' @param useragent The user agent identification.
 #' @return Returns TRUE if the URL
 doesRCurlRequestUrlExist <- function(request, useragent=NULL) {
-    chk::chk_is(request, 'BiodbRequest')
+    chk::chk_is(request, 'Request')
     chk::chk_null_or(useragent, vld=chk::vld_string)
 
     opts <- request$getCurlOptions(useragent=useragent)
@@ -152,13 +123,13 @@ getRCurlContent <- function(u, opts=NULL, enc=integer(), header.fct=NULL,
 
 #' Get URL request result using RCurcl::getURL().
 #'
-#' @param request A BiodbRequest object.
+#' @param request A sched::Request object.
 #' @param useragent The user agent identification.
 #' @param ssl.verifypeer Set to TRUE to enable SSL verify peer.
 #' @return A RequestResult object.
 getRCurlRequestResult <- function(request, useragent=NULL,
     ssl.verifypeer=TRUE) {
-    chk::chk_is(request, 'BiodbRequest')
+    chk::chk_is(request, 'Request')
     chk::chk_null_or(useragent, vld=chk::vld_string)
     chk::chk_flag(ssl.verifypeer)
     content <- NA_character_
@@ -253,10 +224,10 @@ getBaseUrlContent <- function(u, binary=FALSE) {
 
 #' Get URL request result using base::url().
 #'
-#' @param request A BiodbRequest object.
+#' @param request A sched::Request object.
 #' @return A RequestResult object.
 getBaseUrlRequestResult <- function(request) {
-    chk::chk_is(request, 'BiodbRequest')
+    chk::chk_is(request, 'Request')
     sUrl <- request$getUrl()$toString()
     logTrace('Using base::url() for sending request (%s).', sUrl)
 

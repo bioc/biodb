@@ -2,7 +2,7 @@
 test_wsFind <- function(conn) {
     
     # Get request
-    testthat::expect_is(conn$wsFind('aaa', retfmt='request'), 'BiodbRequest')
+    testthat::expect_is(conn$wsFind('aaa', retfmt='request'), 'Request')
     
     # Get plain format
     testthat::expect_match(conn$wsFind('aaa', retfmt='plain'),

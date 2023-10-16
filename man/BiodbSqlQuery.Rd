@@ -12,9 +12,6 @@ This class handles an SQL Query.
 This class represents an SQL query. It is used internally to generate an SQL
 query string.
 }
-\seealso{
-\code{\link{BiodbRequestScheduler}}, \code{\link{BiodbRequest}}.
-}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{

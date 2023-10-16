@@ -1122,8 +1122,7 @@ making reference to \code{oid}, and FALSE otherwise.
 \if{html}{\out{<a id="method-BiodbConn-makeRequest"></a>}}
 \if{latex}{\out{\hypertarget{method-BiodbConn-makeRequest}{}}}
 \subsection{Method \code{makeRequest()}}{
-Makes a BiodbRequest instance using the passed parameters, and set
-ifself as the associated connector.
+Makes a sched::Request instance using the passed parameters.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BiodbConn$makeRequest(...)}\if{html}{\out{</div>}}
 }
@@ -1131,12 +1130,12 @@ ifself as the associated connector.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{Those parameters are passed to the initializer of BiodbRequest.}
+\item{\code{...}}{Those parameters are passed to the initializer of sched::Request.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-The BiodbRequest instance.
+The sched::Request instance.
 }
 }
 \if{html}{\out{<hr>}}

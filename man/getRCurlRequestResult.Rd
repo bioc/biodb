@@ -7,7 +7,7 @@
 getRCurlRequestResult(request, useragent = NULL, ssl.verifypeer = TRUE)
 }
 \arguments{
-\item{request}{A BiodbRequest object.}
+\item{request}{A sched::Request object.}
 
 \item{useragent}{The user agent identification.}
 

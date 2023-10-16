@@ -20,7 +20,7 @@
 #' u <- 'https://www.ebi.ac.uk/webservices/chebi/2.0/test/getCompleteEntity'
 #' url <- sched::URL$new(url=u)
 #' url$setParam('chebiId', 15440)
-#' request <- BiodbRequest$new(method='get', url=url)
+#' request <- sched::Request$new(method='get', url=url)
 #'
 #' # Send request
 #' sched$sendRequest(request)
@@ -30,6 +30,8 @@
 #' mybiodb <- NULL
 #'
 #' @import R6
+#' @import sched
+#' @import openssl
 #' @export
 BiodbRequestScheduler <- R6::R6Class("BiodbRequestScheduler",
 
@@ -80,7 +82,7 @@ sendSoapRequest=function(url, soap.request, soap.action=NA_character_,
 
 #' @description
 #' Sends a request, and returns content result.
-#' @param request A BiodbRequest instance.
+#' @param request A sched::Request instance.
 #' @param cache.read If set to TRUE, the cache system will be used. In case the
 #' same request has already been run and its results saved into the cache, then
 #' the request is not run again, the targeted server not contacted, and the
@@ -102,13 +104,13 @@ sendRequest=function(request, cache.read=TRUE) {
 
     # Try to get query result from cache
     request.key <- request$getUniqueKey()
-    conn <- request$getConn()
+    domain <- request$getUrl()$getDomain()
+    cache.id <- paste(domain, openssl::md5(domain), sep='-')
     if (cache.read && cfg$isEnabled('cache.system')
         && cfg$get('cache.all.requests')
-        && ! is.null(conn)
-        && cch$fileExists(conn$getCacheId(), name=request.key, ext='content')) {
+        && cch$fileExists(cache.id, name=request.key, ext='content')) {
         logDebug("Loading content of request from cache.")
-        content <- cch$loadFileContent(conn$getCacheId(),
+        content <- cch$loadFileContent(cache.id,
             name=request.key, ext='content', output.vector=TRUE)
     }
 
@@ -121,13 +123,12 @@ sendRequest=function(request, cache.read=TRUE) {
 
         # Save content to cache
         if ( ! is.na(content) && cfg$isEnabled('cache.system')
-            && ! is.null(conn)
             && cfg$get('cache.all.requests')) {
             logDebug("Saving content of request to cache.")
-            cch$saveContentToFile(content, cache.id=conn$getCacheId(),
+            cch$saveContentToFile(content, cache.id=cache.id,
                 name=request.key, ext='content')
             cch$saveContentToFile(request$toString(),
-                cache.id=conn$getCacheId(), name=request.key, ext='request')
+                cache.id=cache.id, name=request.key, ext='request')
         }
     }
 
@@ -231,18 +232,63 @@ getUrl=function(url, params=list(), method=c('get', 'post'), header=character(),
 
     method <- match.arg(method)
 
-    request <- BiodbRequest$new(url=sched::URL$new(url=url, params=params),
+    request <- sched::Request$new(url=sched::URL$new(url=url, params=params),
         method=method, header=header, body=body, encoding=encoding)
 
     return(self$sendRequest(request))
 },
 
 #' @description
+<<<<<<< HEAD
 #' Searches for a rule by host name. 
 #' @param url     The host URL.
 #' @param create  Sets to TRUE to create a rule when none exists.
 #' @return A BiodbRequestSchedulerRule object.
 findRule=function(url, create=TRUE) {
+=======
+#' Registers a new connector with the scheduler.
+#' @param conn A valid connector object.
+#' @return Nothing.
+registerConnector=function(conn) {
+
+    logDebug('Register connector %s.', conn$getId())
+
+    # Loop on all connector URLs
+    for (url in conn$getPropertyValue('urls')) {
+
+        # Get/create rule
+        n <- conn$getPropertyValue('scheduler.n')
+        lap <- conn$getPropertyValue('scheduler.t')
+        logDebug("n=%d, lap=%f", n, lap)
+        rule <- private$findRule(url, n=n, lap=lap)
+    }
+
+    return(invisible(NULL))
+}
+
+#' @description
+#' Removes all the defined rules.
+#' @return Nothing.
+,deleteRules=function() {
+    private$host2rule <- list()
+}
+
+#' @description
+#' Gets the number of defined rules.
+#' @return The number of rules defined.
+,getNbRules=function() {
+    return(length(private$host2rule))
+}
+),
+
+private=list(
+    host2rule=NULL,
+    bdb=NULL,
+    nb.max.tries=NULL,
+    ssl.verifypeer=NULL,
+
+findRule=function(url, n=3L, lap=1) {
+>>>>>>> 977c193 (Resolve "Move BiodbRequest into sched CRAN pkg")
 
     chk::chk_not_null(url)
     if ( ! is(url, 'URL')) {

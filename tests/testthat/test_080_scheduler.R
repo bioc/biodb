@@ -183,7 +183,7 @@ test_directRequestToChebi <- function(biodb) {
     # ==> no connector is registered with this domain
 
     # Create a request object
-    request <- BiodbRequest$new(method='get', url=url)
+    request <- sched::Request$new(method='get', url=url)
 
     # Send request
     result <- sched$sendRequest(request)
@@ -211,7 +211,7 @@ test_directRequestToUniprot <- function(biodb) {
     # ==> no connector is registered with this domain
 
     # Create a request object
-    request <- BiodbRequest$new(method='get', url=url)
+    request <- sched::Request$new(method='get', url=url)
 
     # Send request
     result <- sched$sendRequest(request)
@@ -231,7 +231,7 @@ test_wrongURL <- function(biodb) {
     url <- sched::URL$new(url=u)
 
     # Create a request object
-    request <- BiodbRequest$new(method='get', url=url)
+    request <- sched::Request$new(method='get', url=url)
 
     # Send request
     result <- sched$sendRequest(request)

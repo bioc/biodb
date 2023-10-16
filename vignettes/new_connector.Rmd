@@ -351,7 +351,7 @@ Value        | Compulsory | Description
 ------------ | ---------- | --------------------------------
 `plain`      |     yes    | Results are returned verbatim, without any change on the data returned by the server.
 `parsed`     |     yes    | Results are parsed according to the data format expected from the server (JSON, CSV, ...) before being returned.
-`request`    |     yes    | Instead of returning the results of the query, the query is returned as a `BiodbRequest` object. The query is only built, and is never sent to the server.
+`request`    |     yes    | Instead of returning the results of the query, the query is returned as a `sched::Request` object. The query is only built, and is never sent to the server.
 `ids`        |     no     | Results are returned as a character vector of entry identifiers.
 `queryid`    |     no     | This value is used when dealing with an asynchronous web service. The value returned is the ID of the asynchronous query extracted from the parsed results returned by the server. This query ID is then used to query the query status and to query the query results, usually with two other web services.
 `status`     |     no     | When dealing with an asynchronous web service query, this value asks for the current status of the query.

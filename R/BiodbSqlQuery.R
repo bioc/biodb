@@ -3,8 +3,6 @@
 #' This class represents an SQL query. It is used internally to generate an SQL
 #' query string.
 #'
-#' @seealso \code{\link{BiodbRequestScheduler}}, \code{\link{BiodbRequest}}.
-#'
 #' @import R6
 BiodbSqlQuery <- R6::R6Class("BiodbSqlQuery",
 

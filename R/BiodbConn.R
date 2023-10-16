@@ -1156,17 +1156,12 @@ makesRefToEntry=function(id, db, oid, any=FALSE, recurse=FALSE) {
 },
 
 #' @description
-#' Makes a BiodbRequest instance using the passed parameters, and set
-#'     ifself as the associated connector.
-#' @param ... Those parameters are passed to the initializer of BiodbRequest.
-#' @return The BiodbRequest instance.
+#' Makes a sched::Request instance using the passed parameters.
+#'
+#' @param ... Those parameters are passed to the initializer of sched::Request.
+#' @return The sched::Request instance.
 makeRequest=function(...) {
-
-    req <- BiodbRequest$new(...)
-
-    req$setConn(self)
-
-    return(req)
+    return(sched::Request$new(...))
 },
 
 #' @description
@@ -1980,7 +1975,7 @@ doGetEntryContentOneByOne=function(entry.id) {
 
     # If requests is a vector of characters, then the method is using the old
     # scheme.
-    # We now convert the requests to the new scheme, using class BiodbRequest.
+    # We now convert the requests to the new scheme, using class sched::Request.
     if (is.character(requests)) {
         fct <- function(x) self$makeRequest(method='get', url=sched::URL$new(x),
             encoding=encoding)

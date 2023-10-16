@@ -7,7 +7,7 @@
 getBaseUrlRequestResult(request)
 }
 \arguments{
-\item{request}{A BiodbRequest object.}
+\item{request}{A sched::Request object.}
 }
 \value{
 A RequestResult object.
