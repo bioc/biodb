@@ -9,11 +9,11 @@
 #' biodb packages.
 #'
 #' Once the instance is created, some other important classes
-#' (\code{BiodbFactory}, \code{BiodbPersistentCache}, \code{BiodbConfig}, ...)
+#' (\code{BiodbFactory}, \code{BiodbConfig}, ...)
 #' are instantiated (just once) and their instances are later accessible through
 #' get*() methods.
 #'
-#' @seealso \code{\link{BiodbFactory}}, \code{\link{BiodbPersistentCache}},
+#' @seealso \code{\link{BiodbFactory}},
 #' \code{\link{BiodbConfig}}, \code{\link{BiodbEntryFields}},
 #' \code{\link{BiodbDbsInfo}}.
 #'
@@ -29,8 +29,10 @@
 #' mybiodb <- NULL
 #'
 #' @import R6
+#' @import jsonlite
 #' @import yaml
 #' @import plyr
+#' @import fscache
 #' @export
 BiodbMain <- R6::R6Class("BiodbMain",
 
@@ -137,13 +139,10 @@ getConfig=function() {
 getPersistentCache=function() {
 
     if (is.null(private$persistentCache)) {
-        impl <- self$getConfig()$get('persistent.cache.impl')
-        if (impl == 'bioc')
-            private$persistentCache <-
-                BiodbBiocPersistentCache$new(cfg=self$getConfig(), bdb=self)
-        else # custom
-            private$persistentCache <-
-                BiodbCustomPersistentCache$new(cfg=self$getConfig(), bdb=self)
+        folder <- self$getConfig()$get('cache.directory')
+        if (is.null(folder))
+            folder <- 'biodb'
+        private$persistentCache <- fscache::Cache$new(folder)
     }
 
     return(private$persistentCache)

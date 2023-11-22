@@ -479,7 +479,7 @@ conn <- biodb$getFactory()$createConn('mass.csv.file')
 conn$setUrl('base.url', MASSFILEDB.URL)
 
 # Make sure we have no residual cache entries from previous tests
-biodb$getPersistentCache()$deleteAllFiles(conn$getCacheId(), fail=FALSE)
+biodb$getPersistentCache()$delFolder(conn$getCacheId())
 
 # Run generic tests
 biodb::runGenericTests(conn, pkgName='biodb')

@@ -18,7 +18,7 @@ The constructor takes a single argument, \code{autoloadExtraPkgs}, to enable
 biodb packages.
 
 Once the instance is created, some other important classes
-(\code{BiodbFactory}, \code{BiodbPersistentCache}, \code{BiodbConfig}, ...)
+(\code{BiodbFactory}, \code{BiodbConfig}, ...)
 are instantiated (just once) and their instances are later accessible through
 get*() methods.
 }
@@ -35,7 +35,7 @@ mybiodb <- NULL
 
 }
 \seealso{
-\code{\link{BiodbFactory}}, \code{\link{BiodbPersistentCache}},
+\code{\link{BiodbFactory}},
 \code{\link{BiodbConfig}}, \code{\link{BiodbEntryFields}},
 \code{\link{BiodbDbsInfo}}.
 }

@@ -10,6 +10,7 @@
 #' MyEntry <- R6::R6Class("MyEntry", inherit=biodb::BiodbJsonEntry)
 #'
 #' @include BiodbEntry.R
+#' @import jsonlite
 #' @export
 BiodbJsonEntry <- R6::R6Class("BiodbJsonEntry",
 inherit=BiodbEntry,

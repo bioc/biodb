@@ -101,7 +101,7 @@ BiodbConfig           | `mybiodb$getConfig()`           | Access to configuratio
 BiodbDbsInfo          | `mybiodb$getDbsInfo()`          | Databases information (name, description, request frequency, etc).
 BiodbEntryFields      | `mybiodb$getEntryFields()`      | Entry fields information (description, type, cardinality, etc).
 BiodbFactory          | `mybiodb$getFactory()`          | Creation of connectors and entries.
-BiodbPersistentCache  | `mybiodb$getPersistentCache()`  | Cache system on disk.
+BiodbPersistentCache  | `mybiodb$getPersistentCache()`  | Return an instance of fscache::Cache that manages a cache system on disk.
 BiodbRequestScheduler | `mybiodb$getRequestScheduler()` | Send requests to web servers, respecting the frequency limit for each database server.
 : (\#tab:mngtClasses) The management classes.
 Only one instance is created for each of theses classes, and attached to the `BiodbMain` instance,
@@ -397,11 +397,11 @@ entry <- conn$getEntry('17001')
 The entry is now downloaded into the cache system.
 We can check that with the following call:
 ```{r}
-mybiodb$getPersistentCache()$fileExist(conn$getCacheId(), name='17001', ext=conn$getEntryFileExt())
+mybiodb$getPersistentCache()$pathsExist(sub.folder=conn$getCacheId(), paths='17001', suffix=conn$getEntryFileExt())
 ```
 And get the path to the cache file:
 ```{r}
-mybiodb$getPersistentCache()$getFilePath(conn$getCacheId(), name='17001', ext=conn$getEntryFileExt())
+mybiodb$getPersistentCache()$getPaths(sub.folder=conn$getCacheId(), paths='17001', suffix=conn$getEntryFileExt())
 ```
 If we delete the entry content from the cache:
 ```{r}
@@ -409,7 +409,7 @@ conn$deleteAllEntriesFromPersistentCache()
 ```
 The file does not exist anymore:
 ```{r}
-mybiodb$getPersistentCache()$fileExist(conn$getCacheId(), name='17001', ext=conn$getEntryFileExt())
+mybiodb$getPersistentCache()$pathsExist(sub.folder=conn$getCacheId(), paths='17001', suffix=conn$getEntryFileExt())
 ```
 But the entry object is still in memory.
 We need to delete entry instances with the following call:

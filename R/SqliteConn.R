@@ -21,6 +21,7 @@
 #'
 #' @import R6
 #' @import RSQLite
+#' @import jsonlite
 #' @include BiodbConn.R
 #' @export
 SqliteConn <- R6::R6Class("SqliteConn",
@@ -269,7 +270,7 @@ doGetEntryIds=function(max.results=0) {
 ,doGetEntryContentFromDb=function(id) {
 
     # Initialize contents to return
-    content <- rep(list(NULL), length(id))
+    content <- rep(NA_character_, length(id))
 
     private$initDb()
 
@@ -304,7 +305,8 @@ doGetEntryIds=function(max.results=0) {
             }
 
             # Set content
-            content[[i]] <- entry
+            content[i] <- jsonlite::toJSON(entry, pretty=TRUE,
+                                           digits=NA_integer_)
         }
     }
 

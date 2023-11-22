@@ -28,13 +28,13 @@ Suggests:
     covr,
     xml2
 Imports:
-    BiocFileCache,
     R6,
     RCurl,
     RSQLite,
     Rcpp,
     XML,
     chk,
+    fscache,
     git2r,
     jsonlite,
     lgr,
@@ -56,14 +56,11 @@ NeedsCompilation: yes
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Collate:
-    'BiodbPersistentCache.R'
-    'BiodbBiocPersistentCache.R'
     'BiodbConfig.R'
     'BiodbConnBase.R'
     'BiodbConn.R'
     'BiodbEntry.R'
     'BiodbCsvEntry.R'
-    'BiodbCustomPersistentCache.R'
     'BiodbDbInfo.R'
     'BiodbDbsInfo.R'
     'BiodbEntryField.R'

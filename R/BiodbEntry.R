@@ -49,6 +49,7 @@
 #'
 #' @import R6
 #' @import lifecycle
+#' @import jsonlite
 #' @export
 BiodbEntry <- R6::R6Class("BiodbEntry",
 

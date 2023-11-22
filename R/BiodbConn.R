@@ -152,8 +152,9 @@ getEntry=function(id, drop=TRUE, nulls=TRUE) {
 #' entry IDs.
 getCacheFile=function(entry.id) {
 
-    c <- private$bdb$getPersistentCache()
-    fp <- c$getFilePath(self$getCacheId(), entry.id, self$getEntryFileExt())
+    cch <- private$bdb$getPersistentCache()
+    fp <- cch$getPaths(sub.folder=self$getCacheId(), paths=entry.id,
+                       suffix=self$getEntryFileExt())
 
     return(fp)
 },
@@ -182,11 +183,11 @@ getEntryContent=function(id) {
             self$download()
 
         # Initialize content
-        if (cch$isReadable(self) && ! is.null(self$getCacheId())) {
+        if (cch$isReadable() && ! is.null(self$getCacheId())) {
             # Load content from cache
-            content <- cch$loadFileContent(self$getCacheId(),
-                name=id, ext=self$getEntryFileExt())
-            missing.ids <- id[vapply(content, is.null, FUN.VALUE=TRUE)]
+            content <- cch$loadContents(sub.folder=self$getCacheId(),
+                paths=id, suffix=self$getEntryFileExt())
+            missing.ids <- id[vapply(content, is.na, FUN.VALUE=TRUE)]
         }
         else {
             content <- lapply(id, as.null)
@@ -203,7 +204,7 @@ getEntryContent=function(id) {
         # Debug
         if (any(is.na(id)))
             logDebug("%d %s entry ids are NA.", sum(is.na(id)), nm)
-        if (cch$isReadable(self)) {
+        if (cch$isReadable()) {
             nld <- sum( ! is.na(id)) - length(missing.ids)
             logDebug("%d %s entry content(s) loaded from cache.", nld, nm)
             if (n.duplicates > 0)
@@ -236,16 +237,16 @@ getEntryContent=function(id) {
 
                 # Save to cache
                 if ( ! is.null(ec)
-                    && ! is.null(self$getCacheId()) && cch$isWritable(self))
-                    cch$saveContentToFile(ec,
-                        cache.id=self$getCacheId(), name=ch.missing.ids,
-                        ext=self$getEntryFileExt())
+                    && ! is.null(self$getCacheId()) && cch$isWritable())
+                    cch$saveContents(ec,
+                        sub.folder=self$getCacheId(), dst=ch.missing.ids,
+                        suffix=self$getEntryFileExt())
 
                 # Append
                 missing.contents <- c(missing.contents, ec)
 
                 # Debug
-                if (cch$isReadable(self)) {
+                if (cch$isReadable()) {
                     n <- length(missing.ids) - length(missing.contents)
                     logDebug("Now %d id(s) left to be retrieved...", n)
                 }
@@ -471,8 +472,9 @@ addNewEntry=function(entry) {
 
         # Remove entry from non-volatile cache
         cch <- private$bdb$getPersistentCache()
-        if (cch$isWritable(self))
-            cch$deleteFile(self$getCacheId(), name=id, ext=self$getEntryFileExt())
+        if (cch$isWritable())
+            cch$delPaths(sub.folder=self$getCacheId(), paths=id,
+                suffix=self$getEntryFileExt())
 
         # Flag entry as new
         entry$.__enclos_env__$private$setAsNew(TRUE)
@@ -707,7 +709,7 @@ isDownloaded=function() {
 
     private$checkIsDownloadable()
     cch <- private$bdb$getPersistentCache()
-    dwnlded  <- cch$markerExists(self$getCacheId(), name='downloaded')
+    dwnlded  <- cch$tagExists(sub.folder=self$getCacheId(), name='downloaded')
 
     s <- (if (dwnlded) 'already' else 'not yet')
     logDebug0('Database ', self$getId(), ' has ', s, ' been downloaded.')
@@ -731,7 +733,8 @@ getDownloadPath=function() {
     private$checkIsDownloadable()
     cch <- private$bdb$getPersistentCache()
     ext <- self$getPropertyValue('dwnld.ext')
-    path <- cch$getFilePath(self$getCacheId(), name='download', ext=ext)
+    path <- cch$getPaths(sub.folder=self$getCacheId(), paths='download',
+        suffix=ext)
 
     logDebug0('Download path of ', self$getId(), ' is "', path, '".')
 
@@ -752,11 +755,11 @@ setDownloadedFile=function(src, action=c('copy', 'move')) {
     cache.id <- self$getCacheId()
 
     # Remove if already exists
-    if (cch$fileExists(cache.id=cache.id, name=name, ext=ext))
-        cch$deleteFile(cache.id=cache.id, name=name, ext=ext)
+    if (cch$pathsExist(sub.folder=cache.id, paths=name, suffix=ext))
+        cch$delPaths(sub.folder=cache.id, paths=name, suffix=ext)
 
     # Import
-    cch$addFilesToCache(src, cache.id=cache.id, name=name, ext=ext,
+    cch$importFiles(src=src, sub.folder=cache.id, dst=name, suffix=ext,
         action=action)
 
     return(invisible(NULL))
@@ -771,7 +774,7 @@ isExtracted=function() {
 
     private$checkIsDownloadable()
     cch <- private$bdb$getPersistentCache()
-    return(cch$markerExists(self$getCacheId(), name='extracted'))
+    return(cch$tagExists(sub.folder=self$getCacheId(), name='extracted'))
 },
 
 #' @description
@@ -784,7 +787,7 @@ download=function() {
 
     # Download
     cfg <- private$bdb$getConfig()
-    if (cch$isWritable(self) && ! self$isDownloaded()
+    if (cch$isWritable() && ! self$isDownloaded()
         && (cfg$isEnabled('allow.huge.downloads') || self$requiresDownload())
         && ! cfg$isEnabled('offline')) {
 
@@ -796,7 +799,7 @@ download=function() {
         logDebug0('Downloading of ', self$getId(), ' completed.')
 
         # Set marker
-        cch$setMarker(self$getCacheId(), name='downloaded')
+        cch$writeTag(sub.folder=self$getCacheId(), name='downloaded')
     }
 
     # Extract
@@ -807,7 +810,7 @@ download=function() {
         private$doExtractDownload()
 
         # Set marker
-        cch$setMarker(self$getCacheId(), name='extracted')
+        cch$writeTag(sub.folder=self$getCacheId(), name='extracted')
     }
 
     return(invisible(NULL))
@@ -1065,8 +1068,8 @@ deleteAllEntriesFromPersistentCache=function(deleteVolatile=TRUE) {
     if (deleteVolatile)
         self$deleteAllEntriesFromVolatileCache()
     fileExt <- self$getPropertyValue('entry.content.type')
-    private$bdb$getPersistentCache()$deleteFiles(self$getCacheId(),
-        ext=fileExt)
+    private$bdb$getPersistentCache()$delPaths(sub.folder=self$getCacheId(),
+        suffix=fileExt)
     
     return(invisible(NULL))
 },
@@ -1081,7 +1084,7 @@ deleteWholePersistentCache=function(deleteVolatile=TRUE) {
 
     if (deleteVolatile)
         self$deleteAllEntriesFromVolatileCache()
-    private$bdb$getPersistentCache()$deleteAllFiles(self$getCacheId())
+    private$bdb$getPersistentCache()$delFolder(self$getCacheId())
 
     return(invisible(NULL))
 },

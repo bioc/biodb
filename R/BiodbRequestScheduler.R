@@ -108,10 +108,11 @@ sendRequest=function(request, cache.read=TRUE) {
     cache.id <- paste(domain, openssl::md5(domain), sep='-')
     if (cache.read && cfg$isEnabled('cache.system')
         && cfg$get('cache.all.requests')
-        && cch$fileExists(cache.id, name=request.key, ext='content')) {
+        && cch$pathsExist(sub.folder=cache.id, paths=request.key,
+                          suffix='content')) {
         logDebug("Loading content of request from cache.")
-        content <- cch$loadFileContent(cache.id,
-            name=request.key, ext='content', output.vector=TRUE)
+        content <- cch$loadContents(sub.folder=cache.id,
+            paths=request.key, suffix='content')
     }
 
     if (is.na(content)) {
@@ -125,10 +126,10 @@ sendRequest=function(request, cache.read=TRUE) {
         if ( ! is.na(content) && cfg$isEnabled('cache.system')
             && cfg$get('cache.all.requests')) {
             logDebug("Saving content of request to cache.")
-            cch$saveContentToFile(content, cache.id=cache.id,
-                name=request.key, ext='content')
-            cch$saveContentToFile(request$toString(),
-                cache.id=cache.id, name=request.key, ext='request')
+            cch$saveContents(content, sub.folder=cache.id,
+                dst=request.key, suffix='content')
+            cch$saveContents(request$toString(),
+                sub.folder=cache.id, dst=request.key, suffix='request')
         }
     }
 

@@ -285,6 +285,8 @@ test.db.editing <- function(conn) {
     # Create other connector
     conn.2 = conn$getBiodb()$getFactory()$createConn(conn$getDbClass())
     conn.2$allowEditing()
+    print(conn.2)
+    print(entry)
     conn.2$addNewEntry(entry$cloneInstance())
 
     # Test methods

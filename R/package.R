@@ -7,7 +7,7 @@
 #' ```
 #'
 #' @seealso \link{BiodbMain}, \link{BiodbConfig}, \link{BiodbFactory},
-#' \link{BiodbPersistentCache}, \link{BiodbDbsInfo}, \link{BiodbEntryFields}.
+#' \link{BiodbDbsInfo}, \link{BiodbEntryFields}.
 #'
 #' @import withr
 #' @import Rcpp

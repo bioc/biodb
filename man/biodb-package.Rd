@@ -17,7 +17,7 @@ see the "biodb" vignette.
 }
 \seealso{
 \link{BiodbMain}, \link{BiodbConfig}, \link{BiodbFactory},
-\link{BiodbPersistentCache}, \link{BiodbDbsInfo}, \link{BiodbEntryFields}.
+\link{BiodbDbsInfo}, \link{BiodbEntryFields}.
 }
 \author{
 \strong{Maintainer}: Pierrick Roger \email{pierrick.roger@cea.fr} (\href{https://orcid.org/0000-0001-8177-4873}{ORCID})
