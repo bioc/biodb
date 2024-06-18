@@ -72,11 +72,16 @@ initialize=function(id=NA_character_, cache.id=NA_character_, bdb, ...) {
     private$cache.id <- if (is.null(cache.id)) NA_character_ else cache.id
     private$entries <- list()
 
-    # Register with request scheduler
-    if (self$isRemotedb()) {
-        logDebug("Register connector %s with the request scheduler", id)
-        private$bdb$getRequestScheduler()$registerConnector(self)
-    }
+    # Define rules in request scheduler
+    if (self$isRemotedb())
+
+        # Loop on all connector URLs
+        for (url in self$getPropertyValue('urls')) {
+            host <- sched::URL$new(url)$getDomain()
+            n <- self$getPropertyValue('scheduler.n')
+            lap <- self$getPropertyValue('scheduler.t')
+            private$bdb$getRequestScheduler()$setRule(host, n=n, lap=lap)
+        }
 
     return(invisible(NULL))
 },
@@ -153,8 +158,8 @@ getEntry=function(id, drop=TRUE, nulls=TRUE) {
 getCacheFile=function(entry.id) {
 
     cch <- private$bdb$getPersistentCache()
-    fp <- cch$getPaths(sub.folder=self$getCacheId(), paths=entry.id,
-                       suffix=self$getEntryFileExt())
+    fp <- cch$getPaths(sub_folder=self$getCacheId(), paths=entry.id,
+                       suffix=paste0('.', self$getEntryFileExt()))
 
     return(fp)
 },
@@ -185,8 +190,8 @@ getEntryContent=function(id) {
         # Initialize content
         if (cch$isReadable() && ! is.null(self$getCacheId())) {
             # Load content from cache
-            content <- cch$loadContents(sub.folder=self$getCacheId(),
-                paths=id, suffix=self$getEntryFileExt())
+            content <- cch$loadContents(sub_folder=self$getCacheId(),
+                paths=id, suffix=paste0('.', self$getEntryFileExt()))
             missing.ids <- id[vapply(content, is.na, FUN.VALUE=TRUE)]
         }
         else {
@@ -239,8 +244,8 @@ getEntryContent=function(id) {
                 if ( ! is.null(ec)
                     && ! is.null(self$getCacheId()) && cch$isWritable())
                     cch$saveContents(ec,
-                        sub.folder=self$getCacheId(), dst=ch.missing.ids,
-                        suffix=self$getEntryFileExt())
+                        sub_folder=self$getCacheId(), dst=ch.missing.ids,
+                        suffix=paste0('.', self$getEntryFileExt()))
 
                 # Append
                 missing.contents <- c(missing.contents, ec)
@@ -473,8 +478,8 @@ addNewEntry=function(entry) {
         # Remove entry from non-volatile cache
         cch <- private$bdb$getPersistentCache()
         if (cch$isWritable())
-            cch$delPaths(sub.folder=self$getCacheId(), paths=id,
-                suffix=self$getEntryFileExt())
+            cch$delPaths(sub_folder=self$getCacheId(), paths=id,
+                suffix=paste0('.', self$getEntryFileExt()))
 
         # Flag entry as new
         entry$.__enclos_env__$private$setAsNew(TRUE)
@@ -709,7 +714,7 @@ isDownloaded=function() {
 
     private$checkIsDownloadable()
     cch <- private$bdb$getPersistentCache()
-    dwnlded  <- cch$tagExists(sub.folder=self$getCacheId(), name='downloaded')
+    dwnlded  <- cch$tagExists(sub_folder=self$getCacheId(), name='downloaded')
 
     s <- (if (dwnlded) 'already' else 'not yet')
     logDebug0('Database ', self$getId(), ' has ', s, ' been downloaded.')
@@ -732,8 +737,8 @@ getDownloadPath=function() {
 
     private$checkIsDownloadable()
     cch <- private$bdb$getPersistentCache()
-    ext <- self$getPropertyValue('dwnld.ext')
-    path <- cch$getPaths(sub.folder=self$getCacheId(), paths='download',
+    ext <- paste0('.', self$getPropertyValue('dwnld.ext'))
+    path <- cch$getPaths(sub_folder=self$getCacheId(), paths='download',
         suffix=ext)
 
     logDebug0('Download path of ', self$getId(), ' is "', path, '".')
@@ -750,16 +755,16 @@ setDownloadedFile=function(src, action=c('copy', 'move')) {
 
     private$checkIsDownloadable()
     cch <- private$bdb$getPersistentCache()
-    ext <- self$getPropertyValue('dwnld.ext')
+    ext <- paste0('.', self$getPropertyValue('dwnld.ext'))
     name <- 'download'
     cache.id <- self$getCacheId()
 
     # Remove if already exists
-    if (cch$pathsExist(sub.folder=cache.id, paths=name, suffix=ext))
-        cch$delPaths(sub.folder=cache.id, paths=name, suffix=ext)
+    if (cch$pathsExist(sub_folder=cache.id, paths=name, suffix=ext))
+        cch$delPaths(sub_folder=cache.id, paths=name, suffix=ext)
 
     # Import
-    cch$importFiles(src=src, sub.folder=cache.id, dst=name, suffix=ext,
+    cch$importFiles(src=src, sub_folder=cache.id, dst=name, suffix=ext,
         action=action)
 
     return(invisible(NULL))
@@ -774,7 +779,7 @@ isExtracted=function() {
 
     private$checkIsDownloadable()
     cch <- private$bdb$getPersistentCache()
-    return(cch$tagExists(sub.folder=self$getCacheId(), name='extracted'))
+    return(cch$tagExists(sub_folder=self$getCacheId(), name='extracted'))
 },
 
 #' @description
@@ -799,7 +804,7 @@ download=function() {
         logDebug0('Downloading of ', self$getId(), ' completed.')
 
         # Set marker
-        cch$writeTag(sub.folder=self$getCacheId(), name='downloaded')
+        cch$writeTag(sub_folder=self$getCacheId(), name='downloaded')
     }
 
     # Extract
@@ -810,7 +815,7 @@ download=function() {
         private$doExtractDownload()
 
         # Set marker
-        cch$writeTag(sub.folder=self$getCacheId(), name='extracted')
+        cch$writeTag(sub_folder=self$getCacheId(), name='extracted')
     }
 
     return(invisible(NULL))
@@ -1067,8 +1072,8 @@ deleteAllEntriesFromPersistentCache=function(deleteVolatile=TRUE) {
 
     if (deleteVolatile)
         self$deleteAllEntriesFromVolatileCache()
-    fileExt <- self$getPropertyValue('entry.content.type')
-    private$bdb$getPersistentCache()$delPaths(sub.folder=self$getCacheId(),
+    fileExt <- paste0('.', self$getPropertyValue('entry.content.type'))
+    private$bdb$getPersistentCache()$delPaths(sub_folder=self$getCacheId(),
         suffix=fileExt)
     
     return(invisible(NULL))

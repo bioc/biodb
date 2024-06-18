@@ -4,7 +4,7 @@
 \name{biodb-package}
 \alias{biodb}
 \alias{biodb-package}
-\title{biodb: biodb, a library and a development framework for connecting to chemical and biological databases}
+\title{biodb: Biodb, a Library and a Development Framework for Connecting to Chemical and Biological Databases}
 \description{
 The biodb package provides access to standard remote chemical and biological databases (ChEBI, KEGG, HMDB, ...), as well as to in-house local database files (CSV, SQLite), with easy retrieval of entries, access to web services, search of compounds by mass and/or name, and mass spectra matching for LCMS and MSMS. Its architecture as a development framework facilitates the development of new database connectors for local projects or inside separate published packages.
 }

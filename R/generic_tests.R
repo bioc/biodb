@@ -246,7 +246,9 @@ test.entry.page.url.download <- function(conn, opt) {
     # Try downloading
     if ( ! is.na(url)) {
         biodb::logDebug('Trying to download "%s".', url)
-        content <- getUrlContent(url)
+        request <- sched::Request$new(URL$new(url))
+        result <- sched::get_url_request_result(request)
+        content <- result$getContent()
         testthat::expect_true( ! is.na(content))
         testthat::expect_true(nchar(content) > 0)
         testthat::expect_length(grep('<title>.*Not Found</title>', content), 0)
@@ -264,8 +266,9 @@ test.entry.image.url.download <- function(conn, opt) {
 
     # Try downloading
     if ( ! is.na(url)) {
-        content <- getUrlContent(url, binary=TRUE)
-        testthat::expect_is(content, 'raw')
+        request <- sched::Request$new(URL$new(url))
+        result <- sched::get_url_request_result(request, binary=TRUE)
+        testthat::expect_is(result$getContent(), 'raw')
     }
 }
 
@@ -285,8 +288,6 @@ test.db.editing <- function(conn) {
     # Create other connector
     conn.2 = conn$getBiodb()$getFactory()$createConn(conn$getDbClass())
     conn.2$allowEditing()
-    print(conn.2)
-    print(entry)
     conn.2$addNewEntry(entry$cloneInstance())
 
     # Test methods
@@ -1531,8 +1532,8 @@ runGenericLongTests <- function(conn, opt) {
 #' conn <- biodb$getFactory()$createConn('mass.csv.file', lcmsdb)
 #'
 #' # Run generic tests
-#' \donttest{
-#' biodb::runGenericTests(conn)
+#' \dontrun{
+#' biodb::runGenericTests(conn, 'mypkg')
 #' }
 #'
 #' # Terminate the instance

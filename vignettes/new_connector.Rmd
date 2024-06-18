@@ -33,7 +33,7 @@ In this example, we will present you a small implementation of a *ChEBI*
 connector, and show you how to declare it to your *biodb* instance.
 
 A more complete and functional connector for accessing *ChEBI* database is
-implemented in [biodbChEBI](https://github.com/pkrog/biodbChebi) library.
+implemented in [biodbChEBI](https://gitlab.com/rbiodb/biodbChebi) library.
 See \@ref(tab:biodbChebiCapabilities) for a list of the capabilities of this
 official *biodb* connector.
 
@@ -268,7 +268,7 @@ Method                        | Description
 `doGetEntryImageUrl()`        | This method returns the official URL of the entry picture on the database website, for each each accession number passed. The picture returned must be visual representation of the entry (a molecule 3D model, a mass spectrum, ...). The return type is thus a list. If no entry pages are available for the database, the method must return a list of `NULL` values, the same length as the input vector.
 `doGetEntryContentRequest()`  | This method is called by `getEntryContentRequest()`, and must return a list of URLs used to retrieve entry contents. If `concatenate` parameter is `FALSE`, the list returned must be the same length as the vector `id` and each URL must point to one entry content only. If `concatenate` parameter is `TRUE`, then it is permitted (but not compulsory) to return URLs that get more than one entry at a time.
 `doGetEntryIds()`             | This method, called by `getEntryIds()`, should return the full list of accession numbers of the entries contained in the database, or a subset if `max.results` is set. This method is used for testing, in order to get a sample of existing entries, but may also be useful for users when developing.
-`doSearchForEntries()`        | This method implements the search of entries by filtering on some field values. For our example, we have kept it simple by implementing only the search by name (field `"name"`), because a full implementation with mass search would require much more code with complex calls to *ChEBI* API. You can however see a real implementation inside [biodbChebi](https://github.com/pkrog/biodbChebi), the package that implements the *ChEBI* connector.
+`doSearchForEntries()`        | This method implements the search of entries by filtering on some field values. For our example, we have kept it simple by implementing only the search by name (field `"name"`), because a full implementation with mass search would require much more code with complex calls to *ChEBI* API. You can however see a real implementation inside [biodbChebi](https://gitlab.com/rbiodb/biodbChebi), the package that implements the *ChEBI* connector.
 : (\#tab:chebiExMethods) Methods to implement inside the chebi.ex connector.
 
 See the help inside R about `BiodbConn` for details
@@ -299,7 +299,7 @@ search for entries inside the database by name, mass, or any other field.
 For our example we have decided to implement only the search by name in order
 to keep the code as simple and short as possible.
 To see a full implementation of this method, look at the official *biodb*
-*ChEBI* connector at [biodbChebi](https://github.com/pkrog/biodbChebi).
+*ChEBI* connector at [biodbChebi](https://gitlab.com/rbiodb/biodbChebi).
 Inside the method's code you will see that the implementation of the call to
 the *ChEBI* web service API has been left to the dedicated method
 `wsGetLiteEntity()`.
@@ -366,10 +366,10 @@ See \@ref(tab:biodbOfficialRemoteConns).
 
 Package                                               | Official database site
 ----------------------------------------------------- | --------------------------------
-[biodbChebi](https://github.com/pkrog/biodbChebi)     | [ChEBI](https://www.ebi.ac.uk/chebi/)
-[biodbHmdb](https://github.com/pkrog/biodbHmdb)       | [HMDB](https://hmdb.ca/)
-[biodbKegg](https://github.com/pkrog/biodbKegg)       | [KEGG](https://www.kegg.jp/)
-[biodbUniprot](https://github.com/pkrog/biodbUniprot) | [UniProt](https://www.uniprot.org/)
+[biodbChebi](https://gitlab.com/rbiodb/biodbChebi)     | [ChEBI](https://www.ebi.ac.uk/chebi/)
+[biodbHmdb](https://gitlab.com/rbiodb/biodbHmdb)       | [HMDB](https://hmdb.ca/)
+[biodbKegg](https://gitlab.com/rbiodb/biodbKegg)       | [KEGG](https://www.kegg.jp/)
+[biodbUniprot](https://gitlab.com/rbiodb/biodbUniprot) | [UniProt](https://www.uniprot.org/)
 
 : (\#tab:biodbOfficialRemoteConns) *biodb* connectors to remote databases. Some of the *biodb* packages implementing connectors to official remote databases.
 
@@ -634,7 +634,7 @@ some custom parsing code by implementing `doParseFieldsStep2()`.
 This method will be called just after `doParseFieldsStep1()`, which is
 implemented by the abstract class.
 
-See `HmdbMetabolitesEntry` class inside [biodbHmdb](https://github.com/pkrog/biodbHmdb) extension package for an example.
+See `HmdbMetabolitesEntry` class inside [biodbHmdb](https://gitlab.com/rbiodb/biodbHmdb) extension package for an example.
 Here is an extract:
 ```{r, eval=FALSE}
 doParseFieldsStep2=function(parsed.content) {

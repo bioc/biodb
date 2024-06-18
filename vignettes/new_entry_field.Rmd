@@ -164,7 +164,7 @@ To extract values from XML, *biodb* uses the **XPath** query language.
 In **XPath** language, the expression `//chebi:charge` means to get the value
 inside the `charge` tag wherever it is (`//`) inside the tree structure of the
 XML.
-See [XPath Tutorial](http://www.w3schools.com/xsl/xpath_intro.asp) for an
+See [XPath Tutorial](https://www.w3schools.com/xml/xpath_intro.asp) for an
 introduction to XPath.
 We need to give this **XPath** expression to the *biodb* instance, and explain
 to which entry field the extracted value must be affected.

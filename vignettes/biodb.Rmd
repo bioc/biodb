@@ -482,13 +482,13 @@ Extension                                                            | Database 
 [biodbKegg](https://bioconductor.org/packages/biodbKegg)             | [KEGG](https://www.kegg.jp/)              | On Bioconductor | Connectors to KEGG Compound, Enzyme, Genes, Module, Orthology, Pathway and Reaction.
 [biodbHmdb](https://bioconductor.org/packages/biodbHmdb)             | [HMDB](https://hmdb.ca/)                  | On Bioconductor | Connector to HMDB Metabolites.
 [biodbLipidmaps](https://bioconductor.org/packages/biodbLipidmaps)   | [LIPID MAPS](https://www.lipidmaps.org/)  | On Bioconductor | Connector to Lipid Maps Structure.
-[biodbMirbase](https://bioconductor.org/packages/biodbMirbase)       | [miRBase](http://mirbase.org)             | On Bioconductor | Connector miRBase Mature.
+[biodbMirbase](https://bioconductor.org/packages/biodbMirbase)       | [miRBase](https://mirbase.org)            | On Bioconductor | Connector miRBase Mature.
 [biodbNci](https://bioconductor.org/packages/biodbNci)               | [NCI](https://www.cancer.gov/)            | On Bioconductor | Connector to NCI CACTUS.
 [biodbUniprot](https://bioconductor.org/packages/biodbUniprot)       | [UniProt](https://www.uniprot.org/)       | On Bioconductor | Connector to UniProt KB.
 [biodbNcbi](https://bioconductor.org/packages/biodbNcbi)             | [NCBI](https://www.ncbi.nlm.nih.gov/)     | On Bioconductor | Connectors to NCBI CCDS, Gene, PubChem Compound and PubChem Substance.
-[biodbMassbank](https://github.com/pkrog/biodbMassbank)              | [MassBank](https://massbank.eu/MassBank/) | In maintenance  | Connector to MassBank.
-[biodbChemspider](https://github.com/pkrog/biodbChemspider)          | [ChemSpider](http://www.chemspider.com)   | In maintenance  | Connector to ChemSpider.
-[biodbPeakforest](https://github.com/pkrog/biodbPeakforest)          | [PeakForest](https://peakforest.org/)     | In maintenance  | Connectors to PeakForest Compound and PeakForest Mass.
+<!--[biodbMassbank](https://gitlab.com/rbiodb/biodbMassbank)              | [MassBank](https://massbank.eu/MassBank/) | In maintenance  | Connector to MassBank.-->
+<!--[biodbChemspider](https://gitlab.com/rbiodb/biodbChemspider)          | [ChemSpider](http://www.chemspider.com)   | In maintenance  | Connector to ChemSpider.-->
+<!--[biodbPeakforest](https://gitlab.com/rbiodb/biodbPeakforest)          | [PeakForest](https://peakforest.org/)     | In maintenance  | Connectors to PeakForest Compound and PeakForest Mass.-->
 : (\#tab:extensions) Available *biodb* extensions.
 A list of currently available extensions with their description and their status.
 

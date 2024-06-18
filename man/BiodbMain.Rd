@@ -98,8 +98,8 @@ Nothing.
 \if{html}{\out{<a id="method-BiodbMain-terminate"></a>}}
 \if{latex}{\out{\hypertarget{method-BiodbMain-terminate}{}}}
 \subsection{Method \code{terminate()}}{
-Closes \\code{BiodbMain} instance. Call this method when you are done with
-your \\code{BiodbMain} instance.
+Closes \code{BiodbMain} instance. Call this method when you are done with
+your \code{BiodbMain} instance.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BiodbMain$terminate()}\if{html}{\out{</div>}}
 }
@@ -121,7 +121,7 @@ Loads databases and entry fields definitions from YAML file.
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{file}}{The path to a YAML file containing definitions for
-\\code{BiodbMain} (databases, fields or configuration keys).}
+\code{BiodbMain} (databases, fields or configuration keys).}
 
 \item{\code{package}}{The package to which belong the new definitions.}
 }
@@ -135,13 +135,13 @@ Nothing.
 \if{html}{\out{<a id="method-BiodbMain-getConfig"></a>}}
 \if{latex}{\out{\hypertarget{method-BiodbMain-getConfig}{}}}
 \subsection{Method \code{getConfig()}}{
-Returns the single instance of the \\code{BiodbConfig} class.
+Returns the single instance of the \code{BiodbConfig} class.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BiodbMain$getConfig()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
-The instance of the \\code{BiodbConfig} class attached to
+The instance of the \code{BiodbConfig} class attached to
 this BiodbMain instance.
 }
 }
@@ -163,13 +163,13 @@ this BiodbMain instance.
 \if{html}{\out{<a id="method-BiodbMain-getDbsInfo"></a>}}
 \if{latex}{\out{\hypertarget{method-BiodbMain-getDbsInfo}{}}}
 \subsection{Method \code{getDbsInfo()}}{
-Returns the single instance of the \\code{BiodbDbsInfo} class.
+Returns the single instance of the \code{BiodbDbsInfo} class.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BiodbMain$getDbsInfo()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
-The instance of the \\code{BiodbDbsInfo} class attached to
+The instance of the \code{BiodbDbsInfo} class attached to
 this BiodbMain instance.
 }
 }
@@ -177,13 +177,13 @@ this BiodbMain instance.
 \if{html}{\out{<a id="method-BiodbMain-getEntryFields"></a>}}
 \if{latex}{\out{\hypertarget{method-BiodbMain-getEntryFields}{}}}
 \subsection{Method \code{getEntryFields()}}{
-Returns the single instance of the \\code{BiodbEntryFields} class.
+Returns the single instance of the \code{BiodbEntryFields} class.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BiodbMain$getEntryFields()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
-The instance of the \\code{BiodbEntryFields} class
+The instance of the \code{BiodbEntryFields} class
 attached to this BiodbMain instance.
 }
 }
@@ -191,13 +191,13 @@ attached to this BiodbMain instance.
 \if{html}{\out{<a id="method-BiodbMain-getFactory"></a>}}
 \if{latex}{\out{\hypertarget{method-BiodbMain-getFactory}{}}}
 \subsection{Method \code{getFactory()}}{
-Returns the single instance of the \\code{BiodbFactory} class.
+Returns the single instance of the \code{BiodbFactory} class.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BiodbMain$getFactory()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
-The instance of the \\code{BiodbFactory} class attached to
+The instance of the \code{BiodbFactory} class attached to
 this BiodbMain instance.
 }
 }
@@ -205,15 +205,14 @@ this BiodbMain instance.
 \if{html}{\out{<a id="method-BiodbMain-getRequestScheduler"></a>}}
 \if{latex}{\out{\hypertarget{method-BiodbMain-getRequestScheduler}{}}}
 \subsection{Method \code{getRequestScheduler()}}{
-Returns the single instance of the \\code{BiodbRequestScheduler}
-class.
+Returns the single instance of the Scheduler class.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BiodbMain$getRequestScheduler()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
-The instance of the \\code{BiodbRequestScheduler} class
-attached to this BiodbMain instance.
+The instance of the Scheduler class attached to this BiodbMain
+instance.
 }
 }
 \if{html}{\out{<hr>}}
@@ -288,15 +287,15 @@ vector or a list depending on the type of the field.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{entries}}{A list of \\code{BiodbEntry} instances.}
+\item{\code{entries}}{A list of \code{BiodbEntry} instances.}
 
 \item{\code{field}}{The name of a field.}
 
-\item{\code{flatten}}{If set to \\code{TRUE} and the field has a cardinality
+\item{\code{flatten}}{If set to \code{TRUE} and the field has a cardinality
 greater than one, then values be converted into a vector of class
 character in which each entry values are collapsed.}
 
-\item{\code{compute}}{If set to \\code{TRUE}, computable fields will be
+\item{\code{compute}}{If set to \code{TRUE}, computable fields will be
 output.}
 
 \item{\code{limit}}{The maximum number of values to retrieve for each entry.
@@ -309,7 +308,7 @@ values in vectors.}
 }
 \subsection{Returns}{
 A vector if the field is atomic or flatten is set to
-\\code{TRUE}, otherwise a list.
+\code{TRUE}, otherwise a list.
 }
 }
 \if{html}{\out{<hr>}}
@@ -317,7 +316,7 @@ A vector if the field is atomic or flatten is set to
 \if{latex}{\out{\hypertarget{method-BiodbMain-entriesToDataframe}{}}}
 \subsection{Method \code{entriesToDataframe()}}{
 Converts a list of entries or a list of list of entries
-(\\code{BiodbEntry} objects) into a data frame.
+(\code{BiodbEntry} objects) into a data frame.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BiodbMain$entriesToDataframe(
   entries,
@@ -338,17 +337,17 @@ Converts a list of entries or a list of list of entries
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{entries}}{A list of \\code{BiodbEntry} instances or a list of list of
-\\code{BiodbEntry} instances.}
+\item{\code{entries}}{A list of \code{BiodbEntry} instances or a list of list of
+\code{BiodbEntry} instances.}
 
-\item{\code{only.atomic}}{If set to \\code{TRUE}, output only atomic fields, i.e.:
+\item{\code{only.atomic}}{If set to \code{TRUE}, output only atomic fields, i.e.:
 the fields whose value type is one of integer, numeric, logical or
 character.}
 
-\item{\code{null.to.na}}{If set to \\code{TRUE}, each \\code{NULL} entry in the
+\item{\code{null.to.na}}{If set to \code{TRUE}, each \code{NULL} entry in the
 list is converted into a row of NA values.}
 
-\item{\code{compute}}{If set to \\code{TRUE}, computable fields will be output.}
+\item{\code{compute}}{If set to \code{TRUE}, computable fields will be output.}
 
 \item{\code{fields}}{A character vector of field names to output. The data frame
 output will be restricted to this list of fields.}
@@ -357,12 +356,12 @@ output will be restricted to this list of fields.}
 Used for fields that can contain more than one value. Set it to 0 to get all
 values.}
 
-\item{\code{drop}}{If set to \\code{TRUE} and the resulting data frame has only one
+\item{\code{drop}}{If set to \code{TRUE} and the resulting data frame has only one
 column, a vector will be output instead of data frame.}
 
 \item{\code{sort.cols}}{Sort columns in alphabetical order.}
 
-\item{\code{flatten}}{If set to \\code{TRUE}, then each field with a cardinality
+\item{\code{flatten}}{If set to \code{TRUE}, then each field with a cardinality
 greater than one, will be converted into a vector of class character whose
 values are collapsed.}
 
@@ -464,7 +463,7 @@ requested.
 \if{html}{\out{<a id="method-BiodbMain-entriesToJson"></a>}}
 \if{latex}{\out{\hypertarget{method-BiodbMain-entriesToJson}{}}}
 \subsection{Method \code{entriesToJson()}}{
-Converts a list of \\code{BiodbEntry} objects into JSON. Returns a vector of
+Converts a list of \code{BiodbEntry} objects into JSON. Returns a vector of
 characters.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BiodbMain$entriesToJson(entries, compute = TRUE)}\if{html}{\out{</div>}}
@@ -473,10 +472,10 @@ characters.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{entries}}{A list of \\code{BiodbEntry} instances. It may contain NULL
+\item{\code{entries}}{A list of \code{BiodbEntry} instances. It may contain NULL
 elements.}
 
-\item{\code{compute}}{If set to \\code{TRUE}, computable fields will added to JSON
+\item{\code{compute}}{If set to \code{TRUE}, computable fields will added to JSON
 too.}
 }
 \if{html}{\out{</div>}}
@@ -592,7 +591,7 @@ comptable.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{entries}}{A list of \\code{BiodbEntry} instances. It may contain NULL
+\item{\code{entries}}{A list of \code{BiodbEntry} instances. It may contain NULL
 elements.}
 }
 \if{html}{\out{</div>}}
@@ -614,13 +613,13 @@ separate file.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{entries}}{A list of \\code{BiodbEntry} instances. It may contain NULL
+\item{\code{entries}}{A list of \code{BiodbEntry} instances. It may contain NULL
 elements.}
 
 \item{\code{files}}{A character vector of file paths, the same length as entries
 list.}
 
-\item{\code{compute}}{If set to \\code{TRUE}, computable fields will be saved too.}
+\item{\code{compute}}{If set to \code{TRUE}, computable fields will be saved too.}
 }
 \if{html}{\out{</div>}}
 }
@@ -646,7 +645,7 @@ destination database must be editable.
 \item{\code{conn.to}}{The connector of the destination database.}
 
 \item{\code{limit}}{The number of entries of the source database to copy. If set to
-\\code{NULL}, copy the whole database.}
+\code{NULL}, copy the whole database.}
 }
 \if{html}{\out{</div>}}
 }
@@ -672,7 +671,7 @@ Nothing.
 \if{latex}{\out{\hypertarget{method-BiodbMain-fieldIsAtomic}{}}}
 \subsection{Method \code{fieldIsAtomic()}}{
 DEPRECATED method to test if a field is an atomic field. The new
-method is \\code{BiodbEntryField :isVector()}."
+method is \code{BiodbEntryField :isVector()}."
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BiodbMain$fieldIsAtomic(field)}\if{html}{\out{</div>}}
 }

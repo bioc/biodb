@@ -1,7 +1,7 @@
 <!-- vimvars: b:markdown_embedded_syntax={'r':''} -->
 # biodb package
 
-[![Codecov test coverage](https://codecov.io/gh/pkrog/biodb/branch/master/graph/badge.svg)](https://codecov.io/gh/pkrog/biodb?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/pkrog/biodb/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pkrog/biodb?branch=master)
 
 An R package for connecting to chemical and biological databases.
 
@@ -11,11 +11,11 @@ An R package for connecting to chemical and biological databases.
 some non-remote connectors (for CSV file or SQLite db), but the main interest
 of the package is to ease development of your own connectors. Some connectors
 are already available in other packages (e.g.:
-[biodbChebi](https://github.com/pkrog/biodbChebi),
-[biodbHmdb](https://github.com/pkrog/biodbHmdb),
-[biodbKegg](https://github.com/pkrog/biodbKegg),
-[biodbLipidmaps](https://github.com/pkrog/biodbLipidmaps),
-[biodbUniprot](https://github.com/pkrog/biodbUniprot)) on GitHub.
+[biodbChebi](https://gitlab.com/rbiodb/biodbChebi),
+[biodbHmdb](https://gitlab.com/rbiodb/biodbHmdb),
+[biodbKegg](https://gitlab.com/rbiodb/biodbKegg),
+[biodbLipidmaps](https://gitlab.com/rbiodb/biodbLipidmaps),
+[biodbUniprot](https://gitlab.com/rbiodb/biodbUniprot)) on GitHub.
 For now, the targeted databases are the ones that store molecules, proteins,
 lipids and MS spectra. However other type of databases (NMR database for
 instance) could also be targeted.
@@ -52,14 +52,14 @@ devtools::install_github('pkrog/biodb', dependencies=TRUE)
 
 Alongside *biodb* you can install the following R extension packages that use  *biodb* for implementing connectors to online databases:
 
- * [biodbChebi](https://github.com/pkrog/biodbChebi) for accessing the [ChEBI](https://www.ebi.ac.uk/chebi/) database.
- * [biodbHmdb](https://github.com/pkrog/biodbHmdb) for accessing the [HMDB](http://www.hmdb.ca/) database.
- * [biodbKegg](https://github.com/pkrog/biodbKegg) for accessing the [KEGG](https://www.kegg.jp/) databases.
- * [biodbUniprot](https://github.com/pkrog/biodbUniprot) for accessing the [UniProt](https://www.uniprot.org/) database.
+ * [biodbChebi](https://gitlab.com/rbiodb/biodbChebi) for accessing the [ChEBI](https://www.ebi.ac.uk/chebi/) database.
+ * [biodbHmdb](https://gitlab.com/rbiodb/biodbHmdb) for accessing the [HMDB](https://hmdb.ca/) database.
+ * [biodbKegg](https://gitlab.com/rbiodb/biodbKegg) for accessing the [KEGG](https://www.kegg.jp/) databases.
+ * [biodbUniprot](https://gitlab.com/rbiodb/biodbUniprot) for accessing the [UniProt](https://www.uniprot.org/) database.
 
 Installation of one of those extension packages can be done with the following command (replace 'biodbKegg' with the name of the wanted package):
 ```r
-devtools::install_github('pkrog/biodbKegg', dependencies=TRUE)
+devtools::install_gitlab('rbiodb/biodbKegg', dependencies=TRUE)
 ```
 
 ### Installation with Bioconda
@@ -198,10 +198,10 @@ Defining a new connector is done by writing two RC classes and a YAML definition
   + The parsing expressions used for parsing the entry fields.
   + The type of content retrieved from the database when downloading an entry (plain text, XML, HTML, JSON, ...).
 
-For a good starting example of defining a new remote connector, see *biodbChebi* the ChEBI extension for *biodb* at <https://github.com/pkrog/biodbChebi>. In particular:
- * [The connector class](https://github.com/pkrog/biodbChebi/blob/master/R/ChebiConn.R).
- * [The entry class](https://github.com/pkrog/biodbChebi/blob/master/R/ChebiEntry.R).
- * [The definitions file](https://github.com/pkrog/biodbChebi/blob/master/inst/definitions.yml).
+For a good starting example of defining a new remote connector, see *biodbChebi* the ChEBI extension for *biodb* at <https://gitlab.com/rbiodb/biodbChebi>. In particular:
+ * [The connector class](https://gitlab.com/rbiodb/biodbChebi/blob/master/R/ChebiConn.R).
+ * [The entry class](https://gitlab.com/rbiodb/biodbChebi/blob/master/R/ChebiEntry.R).
+ * [The definitions file](https://gitlab.com/rbiodb/biodbChebi/blob/master/inst/definitions.yml).
 
 ## Using the extension generator
 

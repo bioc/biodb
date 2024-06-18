@@ -10,8 +10,8 @@ Description: The biodb package provides access to standard remote chemical and
     for LCMS and MSMS. Its architecture as a development framework facilitates
     the development of new database connectors for local projects or inside
     separate published packages.
-URL: https://github.com/pkrog/biodb
-BugReports: https://github.com/pkrog/biodb/issues
+URL: https://gitlab.com/rbiodb/biodb
+BugReports: https://gitlab.com/rbiodb/biodb/-/issues
 biocViews: Software, Infrastructure, DataImport, KEGG
 Depends:
     R (>= 4.1.0)
@@ -29,12 +29,11 @@ Suggests:
     xml2
 Imports:
     R6,
-    RCurl,
     RSQLite,
     Rcpp,
     XML,
     chk,
-    fscache,
+    fscache (>= 1.0.2),
     git2r,
     jsonlite,
     lgr,
@@ -44,6 +43,7 @@ Imports:
     plyr,
     progress,
     rappdirs,
+    sched (>= 1.0.1),
     stats,
     stringr,
     tools,
@@ -54,7 +54,7 @@ LinkingTo:
     testthat
 NeedsCompilation: yes
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Collate:
     'BiodbConfig.R'
     'BiodbConnBase.R'
@@ -71,8 +71,6 @@ Collate:
     'BiodbHtmlEntry.R'
     'BiodbJsonEntry.R'
     'BiodbListEntry.R'
-    'BiodbRequestScheduler.R'
-    'BiodbRequestSchedulerRule.R'
     'BiodbTxtEntry.R'
     'BiodbSdfEntry.R'
     'BiodbSqlExpr.R'
@@ -114,7 +112,6 @@ Collate:
     'Progress.R'
     'Range.R'
     'RcppExports.R'
-    'RequestResult.R'
     'TestRefEntries.R'
     'catch-routine-registration.R'
     'fcts_biodb.R'
@@ -122,7 +119,6 @@ Collate:
     'fcts_ext.R'
     'fcts_mass.R'
     'fcts_misc.R'
-    'fcts_url.R'
     'generic_tests.R'
     'package.R'
     'spec-dist.R'

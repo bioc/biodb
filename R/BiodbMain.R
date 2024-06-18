@@ -33,6 +33,7 @@
 #' @import yaml
 #' @import plyr
 #' @import fscache
+#' @import sched
 #' @export
 BiodbMain <- R6::R6Class("BiodbMain",
 
@@ -75,8 +76,8 @@ initialize=function(autoloadExtraPkgs=NULL) {
 },
 
 #' @description
-#' Closes \\code{BiodbMain} instance. Call this method when you are done with
-#' your \\code{BiodbMain} instance.
+#' Closes \code{BiodbMain} instance. Call this method when you are done with
+#' your \code{BiodbMain} instance.
 #' @return Nothing.
 terminate=function() {
 
@@ -95,7 +96,7 @@ terminate=function() {
 #' @description
 #' Loads databases and entry fields definitions from YAML file.
 #' @param file The path to a YAML file containing definitions for
-#' \\code{BiodbMain} (databases, fields or configuration keys).
+#' \code{BiodbMain} (databases, fields or configuration keys).
 #' @param package The package to which belong the new definitions.
 #' @return Nothing.
 loadDefinitions=function(file, package='biodb') {
@@ -121,8 +122,8 @@ loadDefinitions=function(file, package='biodb') {
 },
 
 #' @description
-#' Returns the single instance of the \\code{BiodbConfig} class.
-#' @return The instance of the \\code{BiodbConfig} class attached to
+#' Returns the single instance of the \code{BiodbConfig} class.
+#' @return The instance of the \code{BiodbConfig} class attached to
 #'     this BiodbMain instance.
 getConfig=function() {
 
@@ -139,18 +140,26 @@ getConfig=function() {
 getPersistentCache=function() {
 
     if (is.null(private$persistentCache)) {
+
+        # Get path to cache folder
         folder <- self$getConfig()$get('cache.directory')
-        if (is.null(folder))
+        if (is.null(folder) || is.na(folder) || folder == '')
             folder <- 'biodb'
-        private$persistentCache <- fscache::Cache$new(folder)
+
+        # Transition to fscache module.
+        # Requires __FSCACHE__ tag
+        force <- ! file.exists(file.path(folder, '__FSCACHE__'))
+        
+        # Create cache instance
+        private$persistentCache <- fscache::Cache$new(folder, force=force)
     }
 
     return(private$persistentCache)
 },
 
 #' @description
-#' Returns the single instance of the \\code{BiodbDbsInfo} class.
-#' @return The instance of the \\code{BiodbDbsInfo} class attached to
+#' Returns the single instance of the \code{BiodbDbsInfo} class.
+#' @return The instance of the \code{BiodbDbsInfo} class attached to
 #'     this BiodbMain instance.
 getDbsInfo=function() {
 
@@ -161,8 +170,8 @@ getDbsInfo=function() {
 },
 
 #' @description
-#' Returns the single instance of the \\code{BiodbEntryFields} class.
-#' @return The instance of the \\code{BiodbEntryFields} class
+#' Returns the single instance of the \code{BiodbEntryFields} class.
+#' @return The instance of the \code{BiodbEntryFields} class
 #'     attached to this BiodbMain instance.
 getEntryFields=function() {
 
@@ -173,8 +182,8 @@ getEntryFields=function() {
 },
 
 #' @description
-#' Returns the single instance of the \\code{BiodbFactory} class.
-#' @return The instance of the \\code{BiodbFactory} class attached to
+#' Returns the single instance of the \code{BiodbFactory} class.
+#' @return The instance of the \code{BiodbFactory} class attached to
 #'     this BiodbMain instance.
 getFactory=function() {
 
@@ -185,14 +194,24 @@ getFactory=function() {
 },
 
 #' @description
-#' Returns the single instance of the \\code{BiodbRequestScheduler}
-#'     class.
-#' @return The instance of the \\code{BiodbRequestScheduler} class
-#'     attached to this BiodbMain instance.
+#' Returns the single instance of the Scheduler class.
+#'
+#' @return The instance of the Scheduler class attached to this BiodbMain
+#' instance.
 getRequestScheduler=function() {
 
-    if (is.null(private$request.scheduler))
-        private$request.scheduler <- BiodbRequestScheduler$new(bdb=self)
+    if (is.null(private$request.scheduler)) {
+        cfg <- self$getConfig()
+        if (cfg$isEnabled('cache.system') && cfg$get('cache.all.requests'))
+            private$request.scheduler <- sched::Scheduler$new(
+                user_agent=cfg$get('useragent'),
+                dwnld_timeout=cfg$get('dwnld.timeout'))
+        else
+            private$request.scheduler <- sched::Scheduler$new(
+                cache_dir=NULL,
+                user_agent=cfg$get('useragent'),
+                dwnld_timeout=cfg$get('dwnld.timeout'))
+    }
 
     return(private$request.scheduler)
 },
@@ -246,19 +265,19 @@ convertEntryIdFieldToDbClass=function(entry.id.field) {
 #' @description
 #' Extracts the value of a field from a list of entries. Returns either a
 #'     vector or a list depending on the type of the field.
-#' @param entries A list of \\code{BiodbEntry} instances. 
+#' @param entries A list of \code{BiodbEntry} instances. 
 #' @param field The name of a field.
-#' @param flatten If set to \\code{TRUE} and the field has a cardinality
+#' @param flatten If set to \code{TRUE} and the field has a cardinality
 #' greater than one, then values be converted into a vector of class
 #' character in which each entry values are collapsed.
-#' @param compute If set to \\code{TRUE}, computable fields will be
+#' @param compute If set to \code{TRUE}, computable fields will be
 #' output.
 #' @param limit The maximum number of values to retrieve for each entry.
 #' Set to 0 to get all values.
 #' @param withNa If set to TRUE, keep NA values. Otherwise filter out NAs
 #' values in vectors.
 #' @return A vector if the field is atomic or flatten is set to
-#' \\code{TRUE}, otherwise a list.
+#' \code{TRUE}, otherwise a list.
 entriesFieldToVctOrLst=function(entries, field, flatten=FALSE, compute=TRUE,
     limit=0, withNa=TRUE) {
 
@@ -293,24 +312,24 @@ entriesFieldToVctOrLst=function(entries, field, flatten=FALSE, compute=TRUE,
 
 #' @description
 #' Converts a list of entries or a list of list of entries
-#' (\\code{BiodbEntry} objects) into a data frame.
-#' @param entries A list of \\code{BiodbEntry} instances or a list of list of
-#' \\code{BiodbEntry} instances.
-#' @param only.atomic If set to \\code{TRUE}, output only atomic fields, i.e.:
+#' (\code{BiodbEntry} objects) into a data frame.
+#' @param entries A list of \code{BiodbEntry} instances or a list of list of
+#' \code{BiodbEntry} instances.
+#' @param only.atomic If set to \code{TRUE}, output only atomic fields, i.e.:
 #' the fields whose value type is one of integer, numeric, logical or
 #' character.
-#' @param null.to.na If set to \\code{TRUE}, each \\code{NULL} entry in the
+#' @param null.to.na If set to \code{TRUE}, each \code{NULL} entry in the
 #' list is converted into a row of NA values.
-#' @param compute If set to \\code{TRUE}, computable fields will be output.
+#' @param compute If set to \code{TRUE}, computable fields will be output.
 #' @param fields A character vector of field names to output. The data frame
 #' output will be restricted to this list of fields.
 #' @param limit The maximum number of field values to write into new columns.
 #' Used for fields that can contain more than one value. Set it to 0 to get all
 #' values.
-#' @param drop If set to \\code{TRUE} and the resulting data frame has only one
+#' @param drop If set to \code{TRUE} and the resulting data frame has only one
 #' column, a vector will be output instead of data frame.
 #' @param sort.cols Sort columns in alphabetical order.
-#' @param flatten If set to \\code{TRUE}, then each field with a cardinality
+#' @param flatten If set to \code{TRUE}, then each field with a cardinality
 #' greater than one, will be converted into a vector of class character whose
 #' values are collapsed.
 #' @param only.card.one Output only fields whose cardinality is one.
@@ -451,11 +470,11 @@ addColsToDataframe=function(x, id.col, db, fields, limit=3, prefix='') {
 },
 
 #' @description
-#' Converts a list of \\code{BiodbEntry} objects into JSON. Returns a vector of
+#' Converts a list of \code{BiodbEntry} objects into JSON. Returns a vector of
 #' characters.
-#' @param entries A list of \\code{BiodbEntry} instances. It may contain NULL
+#' @param entries A list of \code{BiodbEntry} instances. It may contain NULL
 #' elements.
-#' @param compute If set to \\code{TRUE}, computable fields will added to JSON
+#' @param compute If set to \code{TRUE}, computable fields will added to JSON
 #' too.
 #' @return A list of JSON strings, the same length as entries list.
 entriesToJson=function(entries, compute=TRUE) {
@@ -586,7 +605,7 @@ entryIdsToSingleFieldValues=function(ids, db, field, sortOutput=FALSE,
 #' @description
 #' Computes missing fields in entries, for those fields that are
 #'     comptable.
-#' @param entries A list of \\code{BiodbEntry} instances. It may contain NULL
+#' @param entries A list of \code{BiodbEntry} instances. It may contain NULL
 #'     elements.
 #' @return Nothing.
 computeFields=function(entries) {
@@ -604,11 +623,11 @@ computeFields=function(entries) {
 #' @description
 #' Saves a list of entries in JSON format. Each entry will be saved in a
 #' separate file.
-#' @param entries A list of \\code{BiodbEntry} instances. It may contain NULL
+#' @param entries A list of \code{BiodbEntry} instances. It may contain NULL
 #' elements.
 #' @param files A character vector of file paths, the same length as entries
 #' list.
-#' @param compute If set to \\code{TRUE}, computable fields will be saved too.
+#' @param compute If set to \code{TRUE}, computable fields will be saved too.
 #' @return Nothing.
 saveEntriesAsJson=function(entries, files, compute=TRUE) {
 
@@ -634,7 +653,7 @@ saveEntriesAsJson=function(entries, files, compute=TRUE) {
 #' @param conn.from The connector of the source datababase to copy.
 #' @param conn.to The connector of the destination database.
 #' @param limit The number of entries of the source database to copy. If set to
-#' \\code{NULL}, copy the whole database.
+#' \code{NULL}, copy the whole database.
 #' @return Nothing.
 copyDb=function(conn.from, conn.to, limit=0) {
 
@@ -691,7 +710,7 @@ print=function() {
 
 #' @description
 #' DEPRECATED method to test if a field is an atomic field. The new
-#' method is \\code{BiodbEntryField :isVector()}."
+#' method is \code{BiodbEntryField :isVector()}."
 #' @param field The name of the field.
 #' @return TRUE if the field's value is atomic.
 fieldIsAtomic=function(field) {

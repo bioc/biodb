@@ -16,10 +16,13 @@
 ^biodb\.check\.cache$
 ^cache.*$
 ^codecov\.yml$
-^.*tests/testthat/_snaps$
-^.*tests/testthat/output$
 ^check.Renviron$
 ^.BBSoptions$
 ^.*rds$
-biodb.BiocCheck
+^biodb.BiocCheck$
 ^.gitlab-ci.yml$
+^.*\.dockerfile$
+^Dockerfile$
+^Renviron.bioc$
+^longtests$
+output

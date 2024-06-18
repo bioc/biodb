@@ -8,7 +8,7 @@ test:r42:
       libharfbuzz-dev libfribidi-dev
       libssl-dev
       libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev
-      pandoc texlive-full
+      pandoc texlive-full qpdf
     - R -e "install.packages('devtools')"
     - make install.deps
     - make tests

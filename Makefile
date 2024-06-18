@@ -1,37 +1,56 @@
-include inst/templates/make_file
+PACKAGE=$(subst Package: ,,$(shell grep ^Package: DESCRIPTION))
+VERSION=$(subst Version: ,,$(shell grep ^Version: DESCRIPTION))
+RFLAGS=--slave --no-restore
+PKG_FILE=$(PACKAGE)_$(VERSION).tar.gz
+R=R $(RFLAGS)
+R_VERSIONS=4.1.2 4.2.3 latest
 
-# Get all packages (biodb and pkgensions)
-PKGS=$(sort $(patsubst ../%/DESCRIPTION,%,$(wildcard ../biodb*/DESCRIPTION)))
+export BIODB_CACHE_DIRECTORY=$(CURDIR)/cache
 
-debug::
-	$(info PKGS=$(PKGS))
+all:
 
-# Generic target for checking package
-# $(1): Target name.
-# $(2): Package name to check.
-# $(3): Path to package folder.
-# $(4): Packages targets to run.
-define make_check_target =
-$(1):
-	@echo -ne "Checking $(2)... "
-	@log=$$$$(mktemp -t biodb.XXXXXX) ; \
-	TIMEFORMAT="%0R" ; \
-	t=$$$$(time (make -C $(3) $(4) >$$$$log 2>&1) 2>&1) ; \
-	status=$$$$? ; \
-	echo "$$$${t}s" ; \
-	[[ $$$$status -eq 0 ]] || cat $$$$log ; \
-	$(RM) $$$$log ; \
-	test $$$$status -eq 0
-endef
+build: NAMESPACE
+	$(R) CMD build .
 
-#$(eval $(call make_check_target,check.biodb,biodb,.,doc check.all install))
-$(foreach pkg,$(PKGS),$(eval $(call make_check_target,check.$(pkg),$(pkg),../$(pkg),doc check.all install)))
-$(foreach pkg,$(PKGS),$(eval $(call make_check_target,long.check.$(pkg),$(pkg),../$(pkg),test.all doc check.all install)))
+$(PKG_FILE): build
 
-check.pkgs: $(PKGS:%=check.%) git.status
+check: $(PKG_FILE)
+	$(R) CMD check --as-cran "$<"
 
-long.check.pkgs: $(PKGS:%=long.check.%) git.status
+NAMESPACE: doc
 
-git.status:
-	@echo
-	@for pkg in $(PKGS) ; do echo -e "\n$$pkg:" ; cd  ../$$pkg ; git status -su ; cd $(CURDIR) ; done
+doc:
+	$(R) -e "roxygen2::roxygenise()"
+
+install: $(PKG_FILE)
+	$(R) CMD INSTALL $(PKG_FILE)
+
+test:
+	$(R) -e "testthat::test_local()"
+
+install.deps:
+	R -e "if (!requireNamespace('devtools')) install.packages('devtools') ; devtools::install_dev_deps('.') ; BiocManager::install('BiocStyle')"
+
+dockers: $(addprefix docker_,$(R_VERSIONS))
+
+docker_%:
+	docker buildx build --progress plain --build-arg "VERSION=$(patsubst docker_%,%,$@)" -t "biodb:$(patsubst docker_%,%,$@)" .
+
+base_dockers: $(addprefix base_docker_,$(R_VERSIONS))
+
+base_docker_%:
+	docker buildx build --progress plain -f base_docker.dockerfile --build-arg "VERSION=$(patsubst base_docker_%,%,$@)" -t "registry.gitlab.com/rbiodb/biodb:$(patsubst base_docker_%,%,$@)" .
+
+push_base_dockers: $(addprefix push_base_docker_,$(R_VERSIONS))
+
+push_base_docker_%:
+	docker push "registry.gitlab.com/rbiodb/biodb:$(patsubst push_base_docker_%,%,$@)"
+
+cov:
+	./compute_coverage
+
+clean:
+	$(RM) *.tar.gz *.log src/*.o src/*.so
+	$(RM) -r man *.Rcheck cache tests/testthat/output
+
+.PHONY: all clean check doc install test
