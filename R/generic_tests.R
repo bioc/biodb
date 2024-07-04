@@ -533,7 +533,7 @@ test.searchByName <- function(conn, opt) {
             '".')
         testthat::expect_true( ! is.null(ids), msg)
         testthat::expect_true(length(ids) > 0, msg)
-        testthat::expect_true(id %in% ids, msg)
+        testthat::expect_true(!!id %in% !!ids, msg)
     }
     else {
         testthat::expect_warning(conn$searchByName(name='foo'))
