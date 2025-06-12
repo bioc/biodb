@@ -2381,13 +2381,4 @@ computeChromColRtRange=function(entry) {
     return( ! is.null(self$getEntry(id)))
 }
 
-,terminate=function() {
-
-    # Unregister from the request scheduler
-    if (self$isRemotedb()) {
-        logDebug("Unregister connector %s from the request scheduler",
-            self$getId())
-        private$bdb$getRequestScheduler()$unregisterConnector(self)
-    }
-}
 ))

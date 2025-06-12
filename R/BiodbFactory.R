@@ -171,7 +171,6 @@ deleteConn=function(conn) {
             error('Connector "%s" is unknown.', conn)
 
         self$deleteAllEntriesFromVolatileCache(conn)
-        private$conn[[conn]]$.__enclos_env__$private$terminate()
         private$conn[[conn]] <- NULL
         logInfo('Connector "%s" deleted.', conn)
     }

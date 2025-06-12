@@ -134,7 +134,8 @@ To get all the mass fields, run:
 e$getFieldsByType('mass')
 ```
 
-If you want more information about a field, you have to access the entry fields instance:
+If you want more information about a field, you have to access the entry fields
+instance:
 ```{r}
 mybiodb$getEntryFields()$get('monoisotopic.mass')
 ```
@@ -143,7 +144,7 @@ mybiodb$getEntryFields()$get('monoisotopic.mass')
 
 Entries may be converted into lists of values, data frames, and JSON.
 
-To convert a single entry into a data frame, run (result in \@ref(tab:entryToDf)):
+To convert a single entry into a data frame, run:
 ```{r}
 x <- e$getFieldsAsDataframe()
 ```
@@ -151,14 +152,14 @@ x <- e$getFieldsAsDataframe()
 knitr::kable(head(x), "pipe", caption="Converting an entry to a data frame")
 ```
 Several options are available to control which fields are output.
-For instance, you can select the set of fields by their name (result in \@ref(tab:filterByName)):
+For instance, you can select the set of fields by their name:
 ```{r}
 x <- e$getFieldsAsDataframe(fields=c('name', 'monoisotopic.mass'))
 ```
 ```{r filterByName, echo=FALSE, results='asis'}
 knitr::kable(head(x), "pipe", caption="Selecting fields by names")
 ```
-or by their type (result in \@ref(tab:filterByType)):
+or by their type:
 ```{r}
 x <- e$getFieldsAsDataframe(fields.type='mass')
 ```
@@ -175,7 +176,7 @@ massSqliteFile <- system.file("extdata", "generated", "massbank_extract_full.sql
 massbank <- mybiodb$getFactory()$createConn('mass.sqlite', url=massSqliteFile)
 massbankEntry <- massbank$getEntry('KNA00776')
 ```
-we can select the fields of cardinality one only (result in \@ref(tab:filterCardOne)):
+we can select the fields of cardinality one only:
 ```{r}
 x <- massbankEntry$getFieldsAsDataframe(only.card.one=TRUE)
 ```
@@ -183,7 +184,7 @@ x <- massbankEntry$getFieldsAsDataframe(only.card.one=TRUE)
 knitr::kable(head(x), "pipe", caption="Selecting fields with only one value")
 ```
 or get all the fields, in which case fields with more than one value will have
-their values concatenated into a string using a default separator (result in \@ref(tab:concatenated)):
+their values concatenated into a string using a default separator:
 ```{r}
 x <- massbankEntry$getFieldsAsDataframe(only.card.one=FALSE)
 ```
@@ -191,14 +192,14 @@ x <- massbankEntry$getFieldsAsDataframe(only.card.one=FALSE)
 knitr::kable(head(x), "pipe", caption="Concatenate multiple values")
 ```
 It is also possible to get one value per line for fields with cardinality
-greater than one (result in \@ref(tab:onePerLine)):
+greater than one:
 ```{r}
 x <- massbankEntry$getFieldsAsDataframe(only.card.one=FALSE, flatten=FALSE)
 ```
 ```{r onePerLine, echo=FALSE, results='asis'}
 knitr::kable(head(x), "pipe", caption="Output one value per row")
 ```
-And we can limit the number of values for each field (result in \@ref(tab:oneValuePerField)):
+And we can limit the number of values for each field:
 ```{r}
 x <- massbankEntry$getFieldsAsDataframe(only.card.one=FALSE, limit=1)
 ```
@@ -206,7 +207,7 @@ x <- massbankEntry$getFieldsAsDataframe(only.card.one=FALSE, limit=1)
 knitr::kable(head(x), "pipe", caption="Output only one value for each field")
 ```
 
-A list of several entries can also be convert into a data frame (result in \@ref(tab:entriesToDf)):
+A list of several entries can also be convert into a data frame:
 ```{r}
 entries <- chebi$getEntry(chebi$getEntryIds(max.results=3))
 x <- mybiodb$entriesToDataframe(entries)
@@ -333,7 +334,7 @@ invisible(lapply(uniprot.entries, completeUniprotEntry))
 ```
 
 Finally we get all entries from our ChEBI extract, merge all our entries into a
-single data frame and save it in a file (see content in \@ref(tab:mergedData)):
+single data frame and save it in a file:
 ```{r}
 chebi.entries <- chebi$getEntry(chebi$getEntryIds())
 all.entries.df <- mybiodb$entriesToDataframe(c(chebi.entries, uniprot.entries))
