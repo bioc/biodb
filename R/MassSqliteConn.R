@@ -21,6 +21,7 @@
 #' mybiodb$terminate()
 #'
 #' @import R6
+#' @import sqlq
 #' @include SqliteConn.R
 #' @export
 MassSqliteConn <- R6::R6Class('MassSqliteConn',
@@ -47,11 +48,10 @@ doGetMzValues=function(ms.mode, max.results, precursor, ms.level) {
             mzfield <- private$fieldToSqlId(mzfield)
 
             # Build query
-            query <- private$createMsQuery(mzfield=mzfield, ms.mode=ms.mode,
-                ms.level=ms.level, precursor=precursor)
-            query$addField(field=mzfield)
-            if (max.results > 0)
-                query$setLimit(max.results)
+            query <- private$createMsQuery(mzfield, fields=mzfield,
+                                           ms.mode=ms.mode, ms.level=ms.level,
+                                           precursor=precursor,
+                                           limit=max.results)
             logDebug('Run query "%s".', query$toString())
 
             # Run query
@@ -63,142 +63,140 @@ doGetMzValues=function(ms.mode, max.results, precursor, ms.level) {
     return(mz)
 },
 
-createMsQuery=function(mzfield, ms.mode=NULL, ms.level=0, precursor=FALSE) {
+createMsQuery=function(mzfield, fields, ms.mode=NULL, ms.level=0,
+                       precursor=FALSE, limit=0, cond=NULL) { 
 
-    query <- BiodbSqlQuery$new()
-    query$setTable(mzfield)
-    query$setDistinct(TRUE)
-    query$setWhere(BiodbSqlLogicalOp$new(op='and'))
+  # Create SQL query
+  and <- sqlq::ExprCommOp$new('and')
+  if (!is.null(cond))
+    for (expr in cond)
+      and$add(expr)
+  where <- sqlq::make_where(and)
+  query <- sqlq::make_select(mzfield, fields=fields, distinct=TRUE,
+                             where=where, limit=limit)
 
-    if (precursor) {
-        query$addJoin(table1='msprecmz', field1='accession', table2=mzfield,
-            field2='accession')
-        expr <- BiodbSqlBinaryOp$new(lexpr=BiodbSqlField$new(table='msprecmz',
-            field='msprecmz'), op='=', rexpr=BiodbSqlField$new(table=mzfield,
-            field=mzfield))
-        query$getWhere()$addExpr(expr)
-    }
-    if ( ! is.null(ms.level) && ! is.na(ms.level)
-        && (is.numeric(ms.level) || is.integer(ms.level)) && ms.level > 0) {
-        query$addJoin(table1='entries', field1='accession',
-            table2=mzfield, field2='accession')
-        expr <- BiodbSqlBinaryOp$new(lexpr=BiodbSqlField$new(table='entries',
-            field='ms.level'), op='=', rexpr=BiodbSqlValue$new(ms.level))
-        query$getWhere()$addExpr(expr)
-    }
-    if ( ! is.null(ms.mode) && ! is.na(ms.mode) && is.character(ms.mode)) {
-        query$addJoin(table1='entries', field1='accession',
-            table2=mzfield, field2='accession')
-        expr <- BiodbSqlBinaryOp$new(lexpr=BiodbSqlField$new(table='entries',
-            field='ms.mode'), op='=', rexpr=BiodbSqlValue$new(ms.mode))
-        query$getWhere()$addExpr(expr)
-    }
+  if (precursor) {
+    query$add(sqlq::make_join('accession', 'msprecmz', 'accession', mzfield))
+    and$add(sqlq::ExprBinOp$new(sqlq::ExprField$new('msprecmz', 'msprecmz'),
+                                '=', sqlq::ExprField$new(mzfield, mzfield)))
+  }
+  joined_entries <- FALSE
+  if ( ! is.null(ms.level) && ! is.na(ms.level)
+      && (is.numeric(ms.level) || is.integer(ms.level)) && ms.level > 0) {
+    query$add(sqlq::make_join('accession', 'entries', 'accession', mzfield))
+    joined_entries <- TRUE
+    and$add(sqlq::ExprBinOp$new(sqlq::ExprField$new('ms.level', 'entries'),
+                                '=', sqlq::ExprValue$new(ms.level)))
+  }
+  if ( ! is.null(ms.mode) && ! is.na(ms.mode) && is.character(ms.mode)) {
+    if (!joined_entries)
+      query$add(sqlq::make_join('accession', 'entries', 'accession', mzfield))
+    and$add(sqlq::ExprBinOp$new(sqlq::ExprField$new('ms.mode', 'entries'),
+                                '=', sqlq::ExprValue$new(ms.mode)))
+  }
 
-    return(query)
+  return(query)
 },
 
 doSearchMzRange=function(mz.min, mz.max, min.rel.int, ms.mode, max.results,
 precursor, ms.level) {
 
-    ids <- character()
+  ids <- character()
+  private$initDb()
+  if ( ! is.null(private$db)) {
 
-    private$initDb()
+    # Get M/Z field name
+    mzfield <- self$getMatchingMzField()
 
-    if ( ! is.null(private$db)) {
+    if ( ! is.null(mzfield)) {
+      mzfield <- private$fieldToSqlId(mzfield)
 
-        # Get M/Z field name
-        mzfield <- self$getMatchingMzField()
+      cond <- list()
 
-        if ( ! is.null(mzfield)) {
-            mzfield <- private$fieldToSqlId(mzfield)
-            mzfield <- DBI::dbQuoteIdentifier(private$db, mzfield)
-
-            # Build query
-            query <- private$createMsQuery(mzfield=mzfield, ms.mode=ms.mode,
-                ms.level=ms.level, precursor=precursor)
-            query$addField(table=mzfield, field='accession')
-            mz.range.or=BiodbSqlLogicalOp$new('or')
-            for (i in seq_along(if (is.null(mz.max)) mz.min else mz.max)) {
-                and=BiodbSqlLogicalOp$new('and')
-                if ( ! is.null(mz.min) && ! is.na(mz.min[[i]])) {
-                    rval <- BiodbSqlValue$new(as.numeric(mz.min[[i]]))
-                    expr <- BiodbSqlBinaryOp$new(
-                        lexpr=BiodbSqlField$new(table=mzfield,
-                        field=mzfield), op='>=', rexpr=rval)
-                    and$addExpr(expr)
-                }
-                if ( ! is.null(mz.max) && ! is.na(mz.max[[i]])) {
-                    rval <- BiodbSqlValue$new(as.numeric(mz.max[[i]]))
-                    expr <- BiodbSqlBinaryOp$new(
-                        lexpr=BiodbSqlField$new(table=mzfield, field=mzfield),
-                        op='<=', rexpr=rval)
-                    and$addExpr(expr)
-                }
-                mz.range.or$addExpr(and)
-            }
-            query$getWhere()$addExpr(mz.range.or)
-            if ('peak.relative.intensity' %in% DBI::dbListTables(private$db)
-                && ! is.null(min.rel.int) && ! is.na(min.rel.int)
-                && (is.numeric(min.rel.int) || is.integer(min.rel.int))) {
-                query$addJoin(table1=mzfield, field1='accession',
-                    table2='peak.relative.intensity',
-                    field2='peak.relative.intensity')
-                lval <- BiodbSqlField$new(table='peak.relative.intensity',
-                    field='peak.relative.intensity')
-                rval <- BiodbSqlValue$new(min.rel.int)
-                expr <- BiodbSqlBinaryOp$new(lexpr=lval, op='>=', rexpr=rval)
-                query$getWhere()$addExpr(expr)
-            }
-            if (max.results > 0)
-                query$setLimit(max.results)
-            logDebug('Run query "%s".', query$toString())
-
-            # Run query
-            df <- self$getQuery(query)
-            ids <- df[[1]]
+      # Build the conditions on M/Z ranges
+      mz.range.or <- sqlq::ExprCommOp$new('or')
+      for (i in seq_along(if (is.null(mz.max)) mz.min else mz.max)) {
+        and <- sqlq::ExprCommOp$new('and')
+        if ( ! is.null(mz.min) && ! is.na(mz.min[[i]])) {
+          val <- sqlq::ExprValue$new(as.numeric(mz.min[[i]]))
+          and$add(sqlq::ExprBinOp$new(sqlq::ExprField$new(mzfield, mzfield),
+                                      '>=', val))
         }
-    }
+        if ( ! is.null(mz.max) && ! is.na(mz.max[[i]])) {
+          val <- sqlq::ExprValue$new(as.numeric(mz.max[[i]]))
+          and$add(sqlq::ExprBinOp$new(sqlq::ExprField$new(mzfield, mzfield),
+                                      '<=', val))
+        }
+        mz.range.or$add(and)
+      }
+      if (length(mz.range.or$nb_expr()) > 0)
+        cond <- c(cond, mz.range.or)
 
-    return(ids)
+      # Build the conditions on relative intensity
+      if ('peak.relative.intensity' %in% DBI::dbListTables(private$db)
+          && ! is.null(min.rel.int) && ! is.na(min.rel.int)
+          && (is.numeric(min.rel.int) || is.integer(min.rel.int))) {
+        query$add(sqlq::make_join('accession', mzfield,
+                                  'peak.relative.intensity',
+                                  'peak.relative.intensity'))
+        cond <- c(cond, sqlq::ExprBinOp$new(
+                    sqlq::ExprField$new('peak.relative.intensity',
+                                        'peak.relative.intensity'),
+                    '>=', sqlq::ExprValue$new(as.numeric(min.rel.int))))
+      }
+
+      # Build query
+      fields <- list(sqlq::ExprField$new('accession', mzfield))
+      query <- private$createMsQuery(mzfield=mzfield, fields=fields,
+                                     ms.mode=ms.mode, ms.level=ms.level,
+                                     precursor=precursor, cond=cond,
+                                     limit=max.results)
+
+      # Run query
+      logDebug('Run query "%s".', query$toString())
+      df <- self$getQuery(query)
+      ids <- df[[1]]
+    }
+  }
+
+  return(ids)
 }
 
 ,doGetChromCol=function(ids=NULL) {
 
-    chrom.cols <- data.frame(id=character(0), title=character(0))
+  chrom.cols <- data.frame(id=character(0), title=character(0))
 
-    private$initDb()
+  private$initDb()
 
-    if ( ! is.null(private$db)) {
+  if ( ! is.null(private$db)) {
 
-        tables <- DBI::dbListTables(private$db)
+    tables <- DBI::dbListTables(private$db)
 
-        if ('entries' %in% tables) {
+    if ('entries' %in% tables) {
 
-            fields <- DBI::dbListFields(private$db, 'entries')
-            fields.to.get <- c('chrom.col.id', 'chrom.col.name')
+      fields <- DBI::dbListFields(private$db, 'entries')
+      fields.to.get <- c('chrom.col.id', 'chrom.col.name')
 
-            if (all(fields.to.get %in% fields)) {
-                query <- BiodbSqlQuery$new()
-                query$setTable('entries')
-                query$setDistinct(TRUE)
-                for (field in fields.to.get)
-                    query$addField(field=field)
+      if (all(fields.to.get %in% fields)) {
 
-                # Filter on spectra IDs
-                if ( ! is.null(ids)) {
-                    f <- BiodbSqlField$new(field='accession')
-                    w <- BiodbSqlBinaryOp$new(op='in',
-                        lexpr=f, rexpr=BiodbSqlList$new(ids))
-                    query$setWhere(w)
-                }
+        # Filter on spectra IDs
+        where <- NULL
+        if ( ! is.null(ids))
+          where <- sqlq::make_where(
+            sqlq::ExprBinOp$new(sqlq::ExprField$new('accession'),
+                                'in', sqlq::make_values(ids)))
 
-                # Run query
-                chrom.cols <- self$getQuery(query)
-                names(chrom.cols) <- c('id', 'title')
-            }
-        }
+        # Create query
+        query <- sqlq::make_select('entries', fields=fields.to.get, where=where,
+                                   distinct=TRUE)
+
+        # Run query
+        chrom.cols <- self$getQuery(query)
+        names(chrom.cols) <- c('id', 'title')
+      }
     }
+  }
 
-    return(chrom.cols)
+  return(chrom.cols)
 }
 ))

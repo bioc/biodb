@@ -43,6 +43,7 @@ Imports:
     progress,
     rappdirs,
     sched (>= 1.0.1),
+    sqlq,
     stats,
     stringr,
     tools,
@@ -72,13 +73,6 @@ Collate:
     'BiodbListEntry.R'
     'BiodbTxtEntry.R'
     'BiodbSdfEntry.R'
-    'BiodbSqlExpr.R'
-    'BiodbSqlBinaryOp.R'
-    'BiodbSqlField.R'
-    'BiodbSqlList.R'
-    'BiodbSqlLogicalOp.R'
-    'BiodbSqlQuery.R'
-    'BiodbSqlValue.R'
     'BiodbTestMsgAck.R'
     'CsvFileConn.R'
     'CompCsvFileConn.R'

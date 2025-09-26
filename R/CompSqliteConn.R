@@ -19,6 +19,7 @@
 #' mybiodb$terminate()
 #'
 #' @import R6
+#' @import sqlq
 #' @include SqliteConn.R
 #' @export
 CompSqliteConn <- R6::R6Class('CompSqliteConn',
@@ -39,19 +40,22 @@ doSearchForEntries=function(fields=NULL, max.results=0) {
 
     if ( ! is.null(private$db)) {
 
-        query <- BiodbSqlQuery$new()
-        query$setTable('entries')
-        query$setDistinct(TRUE)
-        query$setWhere(BiodbSqlLogicalOp$new(op='and'))
+        # Create SQL query
+        and <- sqlq::ExprCommOp$new('and')
+        where <- sqlq::make_where(and)
+        fields <- list(sqlq::ExprField$new('accession', 'entries'))
+        query <- sqlq::make_select('entries',
+                                   fields = fields,
+                                   distinct=TRUE, limit=max.results,
+                                   where=where)
 
         # Search by name
         if ('name' %in% names(fields)) {
-            query$addJoin(table1='name', field1='accession',
-                table2='entries', field2='accession')
-            expr <- BiodbSqlBinaryOp$new(lexpr=BiodbSqlField$new(table='name',
-                field='name'), op='=',
-                rexpr=BiodbSqlValue$new(fields$name))
-            query$getWhere()$addExpr(expr)
+          query$add(sqlq::make_join('accession', 'name',
+                                    'accession', 'entries'))
+          and$add(sqlq::ExprBinOp$new(
+                    sqlq::ExprField$new('name', 'name'),
+                    '=', sqlq::ExprValue$new(fields$name)))
         }
         
         # Search by mass
@@ -77,23 +81,16 @@ doSearchForEntries=function(fields=NULL, max.results=0) {
                 }
                 
                 # Complete query
-                expr <- BiodbSqlBinaryOp$new(
-                    lexpr=BiodbSqlField$new(table="entries", field=field),
-                    op='>=', rexpr=BiodbSqlValue$new(rng$a))
-                query$getWhere()$addExpr(expr)
-                expr <- BiodbSqlBinaryOp$new(
-                    lexpr=BiodbSqlField$new(table="entries", field=field),
-                    op='<=', rexpr=BiodbSqlValue$new(rng$b))
-                query$getWhere()$addExpr(expr)
+                and$add(sqlq::ExprBinOp$new(
+                    sqlq::ExprField$new(field, 'entries'),
+                    '>=', sqlq::ExprValue$new(rng$a)))
+                and$add(sqlq::ExprBinOp$new(
+                    sqlq::ExprField$new(field, 'entries'),
+                    '<=', sqlq::ExprValue$new(rng$b)))
             }
         }
-        
-        # Cut
-        if (max.results > 0)
-            query$setLimit(max.results)
-        
+
         # Run query
-        query$addField(table="entries", field='accession')
         x <- self$getQuery(query)
         ids <- x[[1]]
     }
