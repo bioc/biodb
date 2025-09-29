@@ -33,7 +33,6 @@ Imports:
     XML,
     chk,
     fscache (>= 1.0.2),
-    git2r,
     jsonlite,
     lgr,
     lifecycle,
@@ -80,23 +79,6 @@ Collate:
     'SqliteConn.R'
     'CompSqliteConn.R'
     'CompSqliteEntry.R'
-    'ExtGenerator.R'
-    'ExtFileGenerator.R'
-    'ExtConnClass.R'
-    'ExtCpp.R'
-    'ExtDefinitions.R'
-    'ExtDescriptionFile.R'
-    'ExtEntryClass.R'
-    'ExtGitignore.R'
-    'ExtLicense.R'
-    'ExtMakefile.R'
-    'ExtPackage.R'
-    'ExtPackageFile.R'
-    'ExtRbuildignore.R'
-    'ExtReadme.R'
-    'ExtTests.R'
-    'ExtTravisFile.R'
-    'ExtVignette.R'
     'FileTemplate.R'
     'MassCsvFileConn.R'
     'MassCsvFileEntry.R'
@@ -109,7 +91,6 @@ Collate:
     'catch-routine-registration.R'
     'fcts_biodb.R'
     'fcts_deprecated.R'
-    'fcts_ext.R'
     'fcts_mass.R'
     'fcts_misc.R'
     'generic_tests.R'

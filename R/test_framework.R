@@ -148,18 +148,6 @@ createBiodbTestInstance <- function(ack=FALSE) {
     return(biodb)
 }
 
-#' Get the test output directory.
-#'
-#' Returns the path to the test output directory. The function creates this also
-#' this directory if it does not exist.
-#'
-#' @return The path to the test output directory, as a character value.
-#'
-#' @examples
-#' # Get the test output directory:
-#' biodb::getTestOutputDir()
-#'
-#' @export
 getTestOutputDir <- function() {
 
     p <- file.path(getwd(), 'output')

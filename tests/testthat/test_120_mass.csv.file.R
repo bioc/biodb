@@ -315,7 +315,7 @@ test.mass.csv.file.cache.id <- function(biodb) {
     testthat::expect_null(conn$getCacheId())
 
     # Set URL
-    db.file <- file.path(biodb::getTestOutputDir(), 'test.mass.csv.file.cache.id_db.tsv')
+    db.file <- file.path(biodb:::getTestOutputDir(), 'test.mass.csv.file.cache.id_db.tsv')
     conn$setUrl('base.url', db.file)
 
     # Test that cache ID is not NULL
@@ -346,7 +346,7 @@ test.mass.csv.file.cache.confusion <- function(biodb) {
                 stringsAsFactors=FALSE)
 
     # Open a connector to data frame and set URL to file db A
-    db.A.file <- file.path(biodb::getTestOutputDir(),
+    db.A.file <- file.path(biodb:::getTestOutputDir(),
                            'test.mass.csv.file.cache.confusion_db_A.tsv')
     if (file.exists(db.A.file))
         unlink(db.A.file)
@@ -364,7 +364,7 @@ test.mass.csv.file.cache.confusion <- function(biodb) {
     biodb$getFactory()$deleteConn(conn$getId())
 
     # Open a connector to a file db B that does not exist
-    db.B.file <- file.path(biodb::getTestOutputDir(), 'test.mass.csv.file.cache.confusion_db_B.tsv')
+    db.B.file <- file.path(biodb:::getTestOutputDir(), 'test.mass.csv.file.cache.confusion_db_B.tsv')
     if (file.exists(db.B.file))
         unlink(db.B.file)
     conn <- biodb$getFactory()$createConn('mass.csv.file', url = db.B.file)
