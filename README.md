@@ -48,19 +48,6 @@ install.packages('devtools')
 devtools::install_github('pkrog/biodb', dependencies=TRUE)
 ```
 
-### Installing extension packages
-
-Alongside *biodb* you can install the following R extension packages that use  *biodb* for implementing connectors to online databases:
-
- * [biodbChebi](https://gitlab.com/rbiodb/biodbChebi) for accessing the [ChEBI](https://www.ebi.ac.uk/chebi/) database.
- * [biodbHmdb](https://gitlab.com/rbiodb/biodbHmdb) for accessing the [HMDB](https://hmdb.ca/) database.
- * [biodbKegg](https://gitlab.com/rbiodb/biodbKegg) for accessing the [KEGG](https://www.kegg.jp/) databases.
- * [biodbUniprot](https://gitlab.com/rbiodb/biodbUniprot) for accessing the [UniProt](https://www.uniprot.org/) database.
-
-Installation of one of those extension packages can be done with the following command (replace 'biodbKegg' with the name of the wanted package):
-```r
-devtools::install_gitlab('rbiodb/biodbKegg', dependencies=TRUE)
-```
 
 ### Installation with Bioconda
 

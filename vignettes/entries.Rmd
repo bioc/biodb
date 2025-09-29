@@ -170,7 +170,7 @@ knitr::kable(head(x), "pipe", caption="Selecting fields by type")
 In case of entries with fields that contain multiple values, other options are
 useful.
 This is the case for mass spectrum entries.
-If we get an entry from an extract of [Massbank](https://massbank.eu/) [@horai2010_massbank]:
+If we get an entry from an extract of [Massbank](https://massbank.eu/MassBank/) [@horai2010_massbank]:
 ```{r}
 massSqliteFile <- system.file("extdata", "generated", "massbank_extract_full.sqlite", package='biodb')
 massbank <- mybiodb$getFactory()$createConn('mass.sqlite', url=massSqliteFile)

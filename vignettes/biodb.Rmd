@@ -431,67 +431,6 @@ spectrum (the column names are the peak numbers of the input spectrum).
 knitr::kable(head(matchDf), "pipe", caption="Results of running spectrum matching service on an MS/MS database.")
 ```
 
-# Creating and improving connectors
-
-A powerful feature of *biodb* is its architecture as a development framework.
-Connectors can be extended dynamically by created new rules to parse field
-values, or creating new fields.
-New connectors can also be defined. This feature has been used to create
-connectors to public databases like: KEGG, ChEBI, HMDB or UniProt.
-
-See the vignettes
-```{r, echo=FALSE, results='asis'}
-make_vignette_ref('new_entry_field')
-```
-and
-```{r, echo=FALSE, results='asis'}
-make_vignette_ref('new_connector')
-```
-for details about connector creation and defining new entry fields.
-
-# Existing biodb extension packages
-
-Several extension packages for *biodb* exist today on GitHub. See table
-\@ref(tab:extensions) for a list of those extension and a short description.
-
-For installing them, please first make sure that you have the package
-`devtools` installed and run:
-```{r, eval=FALSE}
-devtools::install_github('pkrog/biodbChebi', dependencies=TRUE, build_vignettes=TRUE)
-```
-Replace `'pkrog/biodbChebi'` by the appropriate repository.
-
-The extensions whose status is marked as `Functional` are in working order and
-can be installed and used safely with *biodb*. They may still need some updates
-in the documentation or the tests, thus do not hesitate to contact us if you
-have doubts on the API, the behaviour or if you would like to improve the
-extension.
-The extensions whose status is marked as `In maintenance` are currently non
-functional due to the refactoring of *biodb* into a development framework, but
-will be upgraded as soon as possible.
-If have the need to re-enable a currently `in maintenance` extension, do not
-hesitate to contact us, we may be able to accelerate the upgrade or propose you
-with our support to upgrade it yourself.
-If you have the desire to develop a new extension, please contact us, as we
-will be able accompany you in the process.
-
-Extension                                                            | Database                                  | Status          | Description
--------------------------------------------------------------------- | ----------------------------------------- | --------------- | ----------------------------------------------------------------
-[biodbChebi](https://bioconductor.org/packages/biodbChebi)           | [ChEBI](https://www.ebi.ac.uk/chebi/)     | On Bioconductor | Connector to ChEBI.
-[biodbExpasy](https://bioconductor.org/packages/biodbExpasy)         | [ExPASy](https://www.expasy.org/)         | On Bioconductor | Connector to ExPASy Enzyme.
-[biodbKegg](https://bioconductor.org/packages/biodbKegg)             | [KEGG](https://www.kegg.jp/)              | On Bioconductor | Connectors to KEGG Compound, Enzyme, Genes, Module, Orthology, Pathway and Reaction.
-[biodbHmdb](https://bioconductor.org/packages/biodbHmdb)             | [HMDB](https://hmdb.ca/)                  | On Bioconductor | Connector to HMDB Metabolites.
-[biodbLipidmaps](https://bioconductor.org/packages/biodbLipidmaps)   | [LIPID MAPS](https://www.lipidmaps.org/)  | On Bioconductor | Connector to Lipid Maps Structure.
-[biodbMirbase](https://bioconductor.org/packages/biodbMirbase)       | [miRBase](https://mirbase.org)            | On Bioconductor | Connector miRBase Mature.
-[biodbNci](https://bioconductor.org/packages/biodbNci)               | [NCI](https://www.cancer.gov/)            | On Bioconductor | Connector to NCI CACTUS.
-[biodbUniprot](https://bioconductor.org/packages/biodbUniprot)       | [UniProt](https://www.uniprot.org/)       | On Bioconductor | Connector to UniProt KB.
-[biodbNcbi](https://bioconductor.org/packages/biodbNcbi)             | [NCBI](https://www.ncbi.nlm.nih.gov/)     | On Bioconductor | Connectors to NCBI CCDS, Gene, PubChem Compound and PubChem Substance.
-<!--[biodbMassbank](https://gitlab.com/rbiodb/biodbMassbank)              | [MassBank](https://massbank.eu/MassBank/) | In maintenance  | Connector to MassBank.-->
-<!--[biodbChemspider](https://gitlab.com/rbiodb/biodbChemspider)          | [ChemSpider](http://www.chemspider.com)   | In maintenance  | Connector to ChemSpider.-->
-<!--[biodbPeakforest](https://gitlab.com/rbiodb/biodbPeakforest)          | [PeakForest](https://peakforest.org/)     | In maintenance  | Connectors to PeakForest Compound and PeakForest Mass.-->
-: (\#tab:extensions) Available *biodb* extensions.
-A list of currently available extensions with their description and their status.
-
 # Sources of documentation
 
 Several vignettes are available. Among them you will find help for creating

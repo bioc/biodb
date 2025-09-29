@@ -1,4 +1,0 @@
-databases:
-  chebi.ex:
-    parsing.expr:
-      charge: //chebi:charge
